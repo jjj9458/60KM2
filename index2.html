@@ -1,0 +1,266 @@
+<!--  index.html  -->
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>九萬畝插爆聯盟系統</title>
+<style>
+/* ---------- Reset 與基礎 ---------- */
+*{box-sizing:border-box;margin:0;padding:0;font-family:"Noto Sans TC",system-ui,sans-serif}
+body{background:#fafafa;color:#212121;line-height:1.5}
+/* ---------- 標頭區 ---------- */
+header{background:#283593;color:#fff;padding:1rem;text-align:center}
+header h1{font-size:1.5rem;font-weight:700}
+header p{font-size:.875rem;margin-top:.25rem}
+/* ---------- 導覽 ---------- */
+nav{display:flex;justify-content:center;background:#3f51b5}
+nav button{flex:1;max-width:180px;border:none;background:transparent;color:#fff;
+  padding:.75rem;cursor:pointer;font-size:1rem}
+nav button.active,nav button:hover{background:#5c6bc0}
+/* ---------- 區塊 ---------- */
+main{padding:1rem;max-width:960px;margin:auto}
+section{display:none;margin-top:1rem}
+section.active{display:block}
+/* ---------- 表單 ---------- */
+form{display:grid;gap:.75rem;margin:1rem 0}
+label{font-size:.9rem;display:flex;flex-direction:column}
+input,select{padding:.5rem;border:1px solid #ccc;border-radius:4px}
+button.submit{background:#03a9f4;color:#fff;border:none;padding:.6rem 1.2rem;
+  cursor:pointer;border-radius:4px;font-size:1rem}
+button.submit:hover{background:#0288d1}
+/* ---------- 清單與表格 ---------- */
+h3{margin-top:1.5rem;margin-bottom:.5rem}
+table{width:100%;border-collapse:collapse;margin-bottom:1.5rem}
+th,td{border:1px solid #bbb;padding:.4rem;font-size:.85rem;text-align:center}
+th{background:#e0e0e0;font-weight:600}
+.countBox{display:inline-block;background:#e91e63;color:#fff;border-radius:50%;
+  width:26px;height:26px;line-height:26px;font-size:.75rem;font-weight:700}
+/* ---------- 響應式 ---------- */
+@media(max-width:600px){
+  nav button{font-size:.875rem;padding:.6rem}
+  header h1{font-size:1.25rem}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>九萬畝插爆聯盟系統</h1>
+  <p>Ninety thousand acres Penetration Alliance</p>
+  <p>別盟的別想偷偷摸摸　連♂️結♂️MY♂️BODY♂️　吃我的屌 Eat my dick</p>
+</header>
+
+<nav>
+  <button class="tab active" data-target="tab-form">填寫資料</button>
+  <button class="tab" data-target="tab-list">詳細清單</button>
+</nav>
+
+<main>
+
+<!-- ============ TAB 1：填寫遊戲資料 ============ -->
+<section id="tab-form" class="active">
+  <h2>填寫遊戲資料</h2>
+
+  <form id="gameForm">
+    <label>密碼 (Password)：<input type="password" id="pwdInput" placeholder="輸入 0506"></label>
+    <label>遊戲 UID（數字）：<input type="number" id="uidInput" required></label>
+    <label>遊戲暱稱（Game ID）：<input type="text" id="nameInput" required></label>
+    <label>分盟編號 (your number)：<input type="number" id="teamInput" min="1" max="2" required></label>
+
+    <label>一專兵種（Exclusive Weapons）：
+      <select id="weaponSelect" required>
+        <option value="">--請選擇--</option>
+        <optgroup label="特殊">
+          <option>我是地鼠號 I'm excavator</option>
+          <option>重盾 Heavy shield</option>
+          <option>槍盾 Spear shield</option>
+          <option>劍盾 SNS</option>
+        </optgroup>
+        <optgroup label="步兵">
+          <option>錘盾 Hammer shield</option>
+          <option>刀盾 saber&shield Soldier</option>
+          <option>長槍 Long spearman</option>
+          <option>長矛 lancer</option>
+          <option>陌刀 Modao</option>
+          <option>長劍 Long Swordsman</option>
+          <option>雙槍 Twin spear</option>
+        </optgroup>
+        <optgroup label="弓兵">
+          <option>長弓 Long bow</option>
+          <option>連弩 Crossbow man</option>
+          <option>毒弓 Toxin bowman</option>
+          <option>獵人 Hunter</option>
+          <option>重弩 Heavy crossbowman</option>
+          <option>火弓 Fire Bowman</option>
+        </optgroup>
+        <optgroup label="騎兵">
+          <option>劍騎 Sword cav</option>
+          <option>槍騎 Spear Cavalry</option>
+          <option>大刀騎 Broadsword cav</option>
+          <option>重騎 Heavy cav</option>
+          <option>弓騎 Bow cav</option>
+          <option>斧騎 Axe cav</option>
+        </optgroup>
+        <option>没想法 None (whatever)</option>
+      </select>
+    </label>
+
+    <label>必選中想玩兵種嗎? (Will you definitely choose it?)：
+      <select id="mustSelect" required>
+        <option value="">--請選擇--</option>
+        <option>YES</option>
+        <option>NO</option>
+      </select>
+    </label>
+
+    <button type="button" class="submit" onclick="submitData()">提交資料</button>
+  </form>
+
+  <h3>A盟已提交 <span id="countA" class="countBox">0</span></h3>
+  <h3>B盟已提交 <span id="countB" class="countBox">0</span></h3>
+
+  <h3>A盟誰還沒寫</h3>
+  <ul id="unfilledA"></ul>
+
+  <h3>B盟誰還沒寫</h3>
+  <ul id="unfilledB"></ul>
+
+</section>
+
+<!-- ============ TAB 2：詳細清單 & 統計 ============ -->
+<section id="tab-list">
+  <h2>詳細清單</h2>
+
+  <h3>A 詳細清單</h3>
+  <table id="tableA">
+    <thead><tr><th>編號</th><th>UID</th><th>暱稱</th><th>武器</th><th>必選</th></tr></thead>
+    <tbody></tbody>
+  </table>
+
+  <h3>B 編號清單</h3>
+  <table id="tableB">
+    <thead><tr><th>編號</th><th>UID</th><th>暱稱</th><th>武器</th><th>必選</th></tr></thead>
+    <tbody></tbody>
+  </table>
+
+  <h2>武器使用統計</h2>
+
+  <h3>A盟統計</h3>
+  <table id="statA">
+    <thead><tr><th>武器名稱</th><th>使用次數</th><th>可能鬼轉玩家</th></tr></thead>
+    <tbody></tbody>
+  </table>
+
+  <h3>B盟統計</h3>
+  <table id="statB">
+    <thead><tr><th>武器名稱</th><th>使用次數</th><th>可能鬼轉玩家</th></tr></thead>
+    <tbody></tbody>
+  </table>
+</section>
+
+</main>
+
+<script>
+/* =========================================================
+   常數設定
+========================================================= */
+const ENTRY_CODE = "0506";           // 進入密碼
+const MAX_TEAMS  = 2;                // 分盟 A=1, B=2
+const LOCAL_KEY  = "clownData";      // LocalStorage key
+
+/* =========================================================
+   Tab 切換
+========================================================= */
+document.querySelectorAll(".tab").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    document.querySelectorAll(".tab").forEach(b=>b.classList.remove("active"));
+    document.querySelectorAll("section").forEach(s=>s.classList.remove("active"));
+    btn.classList.add("active");
+    document.getElementById(btn.dataset.target).classList.add("active");
+  });
+});
+
+/* =========================================================
+   提交資料
+========================================================= */
+function submitData(){
+  const pwd   = document.getElementById("pwdInput").value.trim();
+  if(pwd!==ENTRY_CODE){alert("密碼錯誤！");return;}
+
+  const uid   = document.getElementById("uidInput").value.trim();
+  const name  = document.getElementById("nameInput").value.trim();
+  const team  = +document.getElementById("teamInput").value;
+  const weapon= document.getElementById("weaponSelect").value;
+  const must  = document.getElementById("mustSelect").value;
+
+  if(!uid||!name||!team||!weapon||!must){alert("請完整填寫表單");return;}
+  if(team<1||team>MAX_TEAMS){alert("分盟編號必須 1~2");return;}
+
+  const data  = loadData();
+  data.push({uid,name,team,weapon,must});
+  localStorage.setItem(LOCAL_KEY,JSON.stringify(data));
+
+  alert("提交成功！");
+  document.getElementById("gameForm").reset();
+  refreshDisplay();
+}
+
+/* =========================================================
+   本地資料處理
+========================================================= */
+function loadData(){
+  return JSON.parse(localStorage.getItem(LOCAL_KEY)||"[]");
+}
+
+/* =========================================================
+   畫面刷新：計數、清單、統計
+========================================================= */
+function refreshDisplay(){
+  const data = loadData();
+  const listA = data.filter(d=>d.team===1);
+  const listB = data.filter(d=>d.team===2);
+  // 更新計數
+  document.getElementById("countA").textContent = listA.length;
+  document.getElementById("countB").textContent = listB.length;
+
+  // 生成表格
+  genTable("tableA", listA);
+  genTable("tableB", listB);
+
+  // 簡易統計
+  genStats("statA", listA);
+  genStats("statB", listB);
+
+  // 未填名單 - 示範先清空
+  document.getElementById("unfilledA").innerHTML = "";
+  document.getElementById("unfilledB").innerHTML = "";
+}
+function genTable(tblId,rows){
+  const tbody=document.querySelector(`#${tblId} tbody`);tbody.innerHTML="";
+  rows.forEach((r,i)=>{
+    const tr=document.createElement("tr");
+    tr.innerHTML=`<td>${i+1}</td><td>${r.uid}</td><td>${r.name}</td>
+                  <td>${r.weapon}</td><td>${r.must}</td>`;
+    tbody.appendChild(tr);
+  });
+}
+function genStats(tblId,rows){
+  const stat={};
+  rows.forEach(r=>stat[r.weapon]=(stat[r.weapon]||0)+1);
+  const tbody=document.querySelector(`#${tblId} tbody`);tbody.innerHTML="";
+  Object.entries(stat).forEach(([w,c])=>{
+    const tr=document.createElement("tr");
+    tr.innerHTML=`<td>${w}</td><td>${c}</td><td></td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+/* =========================================================
+   初始化
+========================================================= */
+refreshDisplay();
+</script>
+
+</body>
+</html>
