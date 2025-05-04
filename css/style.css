@@ -1,42 +1,80 @@
-/* =========================
-   全站共同樣式
-========================= */
-* { box-sizing: border-box; }
-body { margin: 0; font-family: "Noto Sans TC", system-ui, sans-serif; }
-header { background: #283593; color: #fff; padding: 0.5rem 1rem; position: relative; }
-header h1 { margin: 0; font-size: 1.2rem; }
-header .top-right { position: absolute; right: 1rem; top: 0.5rem; }
-
-nav { display: flex; background: #3f51b5; }
-nav .tab-btn {
-  flex: 1; border: none; background: transparent; color: #fff;
-  padding: 0.8rem; cursor: pointer; font-size: 1rem;
+/* css/style.css - 全站樣式 */
+:root {
+  --primary: #3f51b5;
+  --primary-light: #5c6bc0;
+  --header-bg: #283593;
+  --card-bg: #ffffff;
+  --card-radius: 6px;
+  --shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
-nav .tab-btn:hover, nav .tab-btn.active { background: #5c6bc0; }
 
-main { padding: 1rem; }
-.tab-content { display: none; }
-.tab-content.active { display: block; }
+/* Reset */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: "Noto Sans TC", system-ui, sans-serif; color: #212121; background: #f4f6fa; line-height: 1.5; }
 
-form { display: grid; gap: 0.5rem; margin: 1rem 0; }
-label { display: flex; flex-direction: column; font-size: 0.9rem; }
-button { padding: 0.5rem 1rem; cursor: pointer; }
+/* Header */
+.site-header { background: var(--header-bg); color: #fff; padding: 0.75rem 1rem; display: flex; align-items: center; justify-content: space-between; }
+.site-header h1 { font-size: 1.25rem; font-weight: 700; }
+.header-actions { display: flex; align-items: center; gap: 0.5rem; }
+.header-actions select,
+.header-actions button { padding: 0.4rem 0.6rem; border-radius: 4px; border: 1px solid #fff; background: transparent; color: #fff; cursor: pointer; font-size: 0.85rem; }
+.header-actions button:hover { background: rgba(255, 255, 255, 0.15); }
 
-#mapWrapper { position: relative; max-width: 600px; overflow: hidden; }
-#mapWrapper img { width: 100%; display: block; }
-.map-marker {
-  position: absolute; width: 10px; height: 10px; border-radius: 50%;
-  background: red; opacity: 0.8;
+/* Nav */
+.main-nav { display: flex; justify-content: center; background: #fff; border-bottom: 1px solid #e0e0e0; }
+.nav-btn { flex: 1; max-width: 180px; padding: 0.75rem; background: #fff; border: none; border-right: 1px solid #e0e0e0; cursor: pointer; font-size: 1rem; }
+.nav-btn.active { background: var(--primary); color: #fff; }
+.nav-btn:last-child { border-right: none; }
+
+/* Layout */
+main { padding: 1rem; max-width: 1280px; margin: auto; }
+.view { display: none; }
+.view.active { display: block; }
+
+/* Card */
+.card { background: var(--card-bg); border-radius: var(--card-radius); padding: 1rem; box-shadow: var(--shadow); margin-bottom: 1.5rem; }
+
+/* Signup layout */
+.signup-wrapper { display: grid; grid-template-columns: 320px 1fr; gap: 1rem; }
+
+.form-card form { display: grid; gap: 0.75rem; }
+label { font-size: 0.9rem; display: flex; flex-direction: column; gap: 0.25rem; }
+input, select { padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px; }
+button.primary { padding: 0.6rem; background: var(--primary); color: #fff; border: none; border-radius: 4px; cursor: pointer; font-size: 1rem; }
+button.primary:hover { background: var(--primary-light); }
+
+/* Stats card */
+.stats-header { display: flex; gap: 1rem; margin-bottom: 1rem; }
+.stat-box { background: #f9fafe; border-radius: 8px; flex: 1; text-align: center; padding: 0.8rem 0; box-shadow: var(--shadow); }
+.stat-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.25rem; }
+.stat-count { font-size: 1.75rem; font-weight: 700; color: var(--primary); }
+
+.number-list { display: flex; flex-wrap: wrap; gap: 0.4rem; list-style: none; font-size: 0.75rem; margin-top: 0.5rem; }
+.number-list li { background: #d7edff; padding: 0.2rem 0.45rem; border-radius: 4px; }
+
+/* Stats tables */
+.stats-wrapper { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem; }
+.stat-table table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+.stat-table th, .stat-table td { border: 1px solid #ddd; padding: 0.35rem; text-align: center; }
+.stat-table th { background: #f1f1f1; }
+.stat-table tbody tr:nth-child(even) { background: #fafafa; }
+
+/* Detail tables */
+.table-wrapper { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.table-wrapper table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+.table-wrapper th, .table-wrapper td { border: 1px solid #ddd; padding: 0.4rem; text-align: center; }
+.table-wrapper th { background: #f1f1f1; }
+
+/* Media (<= 800px) */
+@media (max-width: 800px) {
+  .signup-wrapper { grid-template-columns: 1fr; }
+  .stats-wrapper { grid-template-columns: 1fr; }
+  .table-wrapper { grid-template-columns: 1fr; }
+  .nav-btn { font-size: 0.9rem; }
 }
-.private-info { display: none; }
 
-footer { text-align: center; padding: 1rem 0; font-size: 0.75rem; color: #666; }
-
-/* =========================
-   手機版（<=600px）
-========================= */
-@media (max-width: 600px) {
-  header h1 { font-size: 1rem; }
-  nav .tab-btn { font-size: 0.9rem; padding: 0.6rem; }
-  form { font-size: 0.85rem; }
+/* Media (<= 500px) */
+@media (max-width: 500px) {
+  .site-header h1 { font-size: 1rem; }
+  .header-actions select, .header-actions button { font-size: 0.75rem; padding: 0.3rem 0.5rem; }
 }
