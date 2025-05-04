@@ -1,156 +1,198 @@
-<!-- index.html - 主入口頁面 (放在儲存庫根目錄) -->
+<!-- index.html － 2025-05-04 全面重建版 -->
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>九萬啟插爆聯盟系統</title>
+  <!-- 連結外部樣式 -->
   <link rel="stylesheet" href="css/style.css" />
 </head>
-<body>
-  <header class="site-header">
-    <h1 data-l10n="siteTitle">九萬啟插爆聯盟系統</h1>
 
-    <div class="header-actions">
-      <!-- 多語系切換 -->
-      <select id="langSwitch" aria-label="language switch">
+<body>
+  <!-- ===== 頁首 ===== -->
+  <header class="site-header">
+    <h1 class="site-title">九萬啟插爆聯盟系統</h1>
+
+    <!-- 右上角功能列 -->
+    <div class="site-tools">
+      <!-- 語系切換 -->
+      <select id="langSwitch">
         <option value="zh">繁體中文</option>
         <option value="en">English</option>
       </select>
 
-      <!-- 管理員設定按鈕 (平時可見 / 點後驗證) -->
-      <button id="adminBtn" type="button" data-l10n="btnAdmin">管理員設定</button>
+      <!-- 管理員設定按鈕：觸發驗證碼 -->
+      <button id="adminBtn" type="button">管理員設定</button>
     </div>
   </header>
 
-  <!-- 第一層導覽：填寫資料 / 詳細資訊 / 管理員設定(隱藏) -->
+  <!-- ===== 導覽列／主選項 ===== -->
   <nav class="main-nav">
-    <button class="nav-btn active" data-target="signup" data-l10n="navSignup">填寫資料</button>
-    <button class="nav-btn" data-target="detail" data-l10n="navDetail">詳細資訊</button>
-    <button class="nav-btn" data-target="admin" id="adminTabBtn" style="display:none" data-l10n="navAdmin">管理員設定</button>
+    <button class="tab-btn active" data-target="tab-form">填寫資料</button>
+    <button class="tab-btn" data-target="tab-info">詳細清單</button>
+    <!-- 管理員 Tab 初始隱藏；驗證通過後由 JS 移除 hidden -->
+    <button class="tab-btn hidden" data-target="tab-admin" id="adminTabBtn">管理員設定</button>
   </nav>
 
-  <main>
-    <!-- 1️⃣ 填寫資料 -->
-    <section id="signup" class="view active">
-      <div class="signup-wrapper">
-        <!-- 左：表單卡片 -->
-        <div class="card form-card">
-          <h2 data-l10n="signupTitle">填寫遊戲資料</h2>
-          <form id="signupForm">
-            <label data-l10n="fPass">密碼：
-              <input type="password" id="signupPass" placeholder="輸入 0506" />
-            </label>
-            <label data-l10n="fUID">遊戲 UID (數字)：
-              <input type="number" id="playerUID" required />
-            </label>
-            <label data-l10n="fName">遊戲暱稱 (Game ID)：
-              <input type="text" id="playerName" required />
-            </label>
-            <label data-l10n="fTeam">分盟編號 (your number)：
-              <select id="teamSelect" required>
-                <option value="">--請選擇--</option>
-                <option value="1">A01</option>
-                <option value="2">B01</option>
-              </select>
-            </label>
-            <label data-l10n="fWeapon">一專兵種 (Exclusive Weapons)：
-              <select id="weaponSelect" required>
-                <option value="">--請選擇--</option>
-                <!-- 兵種選項略，可自行增修 -->
-                <option>長弓 Long bow</option>
-                <option>雙槍 Twin spear</option>
-                <option>我是地鼠號 I'm excavator</option>
-              </select>
-            </label>
-            <label data-l10n="fMust">必選中想玩兵種嗎?：
-              <select id="mustSelect" required>
-                <option value="">--請選擇--</option>
-                <option>YES</option>
-                <option>NO</option>
-              </select>
-            </label>
-            <button type="button" class="primary" onclick="submitSignup()" data-l10n="btnSubmit">提交資料</button>
-          </form>
+  <!-- ===== 主內容區 ===== -->
+  <main class="main-wrapper">
+
+    <!-- ------------ 1. 填寫資料 ------------ -->
+    <section id="tab-form" class="tab-page active">
+      <h2>填寫遊戲資料</h2>
+
+      <form id="signupForm" class="data-form">
+        <!-- 驗證碼 -->
+        <label class="form-item">驗證碼：
+          <input type="password" id="pwdInput" placeholder="請輸入 0506" required />
+        </label>
+
+        <!-- UID（僅限數字） -->
+        <label class="form-item">遊戲 UID（數字）：
+          <input type="number" id="uidInput" inputmode="numeric" pattern="\d*" required />
+        </label>
+
+        <!-- 暱稱 -->
+        <label class="form-item">遊戲暱稱：
+          <input type="text" id="nameInput" required />
+        </label>
+
+        <!-- 排位：段位 & 小段 -->
+        <div class="inline-group">
+          <label>遊戲排位：
+            <select id="rankTier" required>
+              <option value="">-- 選段位 --</option>
+              <option value="none">無段位</option>
+              <option value="iron">黑鐵</option>
+              <option value="bronze">青銅</option>
+              <option value="silver">白銀</option>
+              <option value="gold">黃金</option>
+              <option value="platinum">鉑金</option>
+              <option value="diamond">鑽石</option>
+              <option value="master">大師</option>
+              <option value="king">王者</option>
+            </select>
+          </label>
+
+          <label>
+            <select id="rankLevel" required disabled>
+              <option value="">-- 小段 --</option>
+            </select>
+          </label>
         </div>
 
-        <!-- 右：統計卡片 -->
-        <div class="card stats-card">
-          <div class="stats-header">
-            <div class="stat-box">
-              <div class="stat-title">A</div>
-              <div class="stat-count" id="countA">0</div>
-            </div>
-            <div class="stat-box">
-              <div class="stat-title">B</div>
-              <div class="stat-count" id="countB">0</div>
-            </div>
-          </div>
+        <!-- 是否課金 -->
+        <label class="form-item">是否能課金選專：
+          <select id="canPaySelect" required>
+            <option value="">-- 請選擇 --</option>
+            <option value="yes">是</option>
+            <option value="no">否</option>
+          </select>
+        </label>
 
-          <h3>A盟誰還沒寫</h3>
-          <ul id="unfilledA" class="number-list"></ul>
+        <!-- 介紹人 -->
+        <label class="form-item">介紹人：
+          <select id="introSelect" required>
+            <option value="">-- 請選擇 --</option>
+            <option value="newbie">新人</option>
+            <option value="rookie">菜基</option>
+            <option value="dumb">傻屌</option>
+            <option value="core">核心</option>
+          </select>
+        </label>
 
-          <h3>B盟誰還沒寫</h3>
-          <ul id="unfilledB" class="number-list"></ul>
-        </div>
-      </div>
+        <!-- 當 intro = 新人 時顯示 -->
+        <label id="introNameBox" class="form-item hidden">介紹人名稱：
+          <input type="text" id="introNameInput" placeholder="請輸入介紹人名稱" />
+        </label>
 
-      <!-- 底部：武器統計區 -->
-      <h2 data-l10n="weaponStat">武器使用統計</h2>
-      <div class="stats-wrapper">
-        <div class="card stat-table">
-          <h3>A盟統計</h3>
-          <table id="statA">
-            <thead>
-              <tr><th>武器名稱</th><th>使用次數</th><th>可能鬼轉玩家</th></tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
-        <div class="card stat-table">
-          <h3>B盟統計</h3>
-          <table id="statB">
-            <thead>
-              <tr><th>武器名稱</th><th>使用次數</th><th>可能鬼轉玩家</th></tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
-      </div>
+        <!-- 語言 -->
+        <label class="form-item">語言：
+          <select id="langSelect" required>
+            <option value="zh">中文</option>
+            <option value="en">English</option>
+          </select>
+        </label>
+
+        <!-- 提交 -->
+        <button type="button" class="submit-btn" id="submitSignup">提交資料</button>
+      </form>
     </section>
 
-    <!-- 2️⃣ 詳細資訊 -->
-    <section id="detail" class="view">
-      <h2 data-l10n="detailTitle">詳細清單</h2>
-      <div class="table-wrapper">
-        <div class="card">
-          <h3>A 詳細清單</h3>
-          <table id="tableA">
-            <thead>
-              <tr><th>#</th><th>UID</th><th>暱稱</th><th>武器</th><th>必選</th></tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
-        <div class="card">
-          <h3>B 詳細清單</h3>
-          <table id="tableB">
-            <thead>
-              <tr><th>#</th><th>UID</th><th>暱稱</th><th>武器</th><th>必選</th></tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
-      </div>
+    <!-- ------------ 2. 詳細清單 ------------ -->
+    <section id="tab-info" class="tab-page">
+      <!-- 內容由 app.js 動態產生 -->
+      <h2>詳細清單</h2>
+      <div id="infoContainer"></div>
     </section>
 
-    <!-- 3️⃣ 管理員設定 (授權後顯示) -->
-    <section id="admin" class="view">
-      <h2 data-l10n="adminTitle">管理員設定</h2>
-      <p data-l10n="adminIntro">此處可新增後端串接（Google Sheets、分盟邏輯等）。暫為示意。</p>
+    <!-- ------------ 3. 管理員設定（預設隱藏） ------------ -->
+    <section id="tab-admin" class="tab-page hidden">
+      <h2>管理員設定</h2>
+      <!-- 可在 app.js 再擴充管理員功能 -->
+      <p>管理員專用功能面板，驗證通過後顯示。</p>
     </section>
+
   </main>
 
+  <!-- ===== 頁腳 ===== -->
+  <footer class="site-footer">
+    <small>© 2025 插爆提供 — Taiwan is a country.</small>
+  </footer>
+
+  <!-- 連結前端腳本 -->
   <script src="js/app.js"></script>
+
+  <!-- ===== 內嵌最小腳本：排位小段動態產生 & Admin 按鈕 ===== -->
+  <script>
+    /* ---- 動態產生小段 ---- */
+    const tierSelect  = document.getElementById('rankTier');
+    const levelSelect = document.getElementById('rankLevel');
+    tierSelect.addEventListener('change', () => {
+      const map = {
+        none: 0, king: 0,
+        iron: 2, bronze: 3, silver: 3, gold: 3,
+        platinum: 4, diamond: 5, master: 3
+      };
+      const n = map[tierSelect.value] || 0;
+      levelSelect.innerHTML = '';
+      if (n === 0) {
+        levelSelect.disabled = true;
+        levelSelect.insertAdjacentHTML('beforeend', '<option value="-">-</option>');
+      } else {
+        levelSelect.disabled = false;
+        levelSelect.insertAdjacentHTML('beforeend', '<option value="">-- 小段 --</option>');
+        for (let i = 1; i <= n; i++) {
+          levelSelect.insertAdjacentHTML('beforeend', `<option value="${i}">${i}</option>`);
+        }
+      }
+    });
+
+    /* ---- 介紹人為新人時顯示輸入框 ---- */
+    const introSelect = document.getElementById('introSelect');
+    const introBox    = document.getElementById('introNameBox');
+    introSelect.addEventListener('change', () => {
+      introBox.classList.toggle('hidden', introSelect.value !== 'newbie');
+    });
+
+    /* ---- Admin 按鈕驗證碼 ---- */
+    document.getElementById('adminBtn').addEventListener('click', () => {
+      const code = prompt('請輸入驗證碼：');
+      if (code === '基佬閣') {
+        // 顯示 Tab 按鈕 + 頁面
+        document.getElementById('adminTabBtn').classList.remove('hidden');
+        document.getElementById('tab-admin').classList.remove('hidden');
+
+        // 切換到管理員頁
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-page').forEach(p => p.classList.remove('active'));
+        document.getElementById('adminTabBtn').classList.add('active');
+        document.getElementById('tab-admin').classList.add('active');
+      } else {
+        alert('驗證碼錯誤！');
+      }
+    });
+  </script>
 </body>
 </html>
