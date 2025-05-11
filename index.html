@@ -107,6 +107,10 @@
             </select>
           </label>
 
+          <label data-l10n="expectSquadLabel">期望小組：
+            <input type="text" id="expectSquadInput" placeholder="輸入期望小A/B/C隊" data-l10n-placeholder="expectSquadPlaceholder"/>
+          </label>
+
           <div class="button-center">
             <button type="button" class="primary" id="submitSignup" data-l10n="btnSubmit">提交資料</button>
           </div>
@@ -192,11 +196,14 @@
         <div class="stats-header">
           <div class="stat-box"><div class="stat-title">A</div><div class="stat-count" id="countA">0</div></div>
           <div class="stat-box"><div class="stat-title">B</div><div class="stat-count" id="countB">0</div></div>
+          <div class="stat-box"><div class="stat-title">C</div><div class="stat-count" id="countC">0</div></div>
         </div>
         <h3 data-l10n="unfilledATitle">A盟誰還沒寫</h3>
         <ul id="unfilledA" class="number-list"></ul>
         <h3 data-l10n="unfilledBTitle">B盟誰還沒寫</h3>
         <ul id="unfilledB" class="number-list"></ul>
+        <h3 data-l10n="unfilledCTitle">C盟誰還沒寫</h3>
+        <ul id="unfilledC" class="number-list"></ul>
       </div>
 
       <!-- 新佈局容器 -->
@@ -250,6 +257,38 @@
         <div class="card stat-table">
           <h3 data-l10n="listBTitle">B 隊列表</h3>
           <table id="tableB">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th data-l10n="colUid">UID</th>
+                <th data-l10n="colName">暱稱</th>
+                <th data-l10n="colRank">段位</th>
+                <th data-l10n="colPay">課金</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- C 組統計與列表 -->
+      <div class="table-wrapper full-width">
+        <div class="card stat-table">
+          <h3 data-l10n="statCTitle">C 統計</h3>
+          <table id="statC">
+            <thead>
+              <tr>
+                <th data-l10n="colWeapon">武器</th>
+                <th data-l10n="colCount">次數</th>
+                <th data-l10n="colSuspicious">可疑</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <div class="card stat-table">
+          <h3 data-l10n="listCTitle">C 隊列表</h3>
+          <table id="tableC">
             <thead>
               <tr>
                 <th>#</th>
@@ -342,10 +381,10 @@
             <h4>驗證碼設定</h4>
             <div class="inline-group">
               <label>報名表驗證碼：
-                <input type="text" id="adminSignupCode" value="AAA">
+                <input type="text" id="verifyCodeA" value="AAA">
               </label>
               <label>專武統計驗證碼：
-                <input type="text" id="adminWeaponCode" value="BBB">
+                <input type="text" id="verifyCodeB" value="BBB">
               </label>
             </div>
           </div>
@@ -378,11 +417,11 @@
           <div class="admin-group">
             <h4>特殊項目名額</h4>
             <div class="quota-grid">
-              <label>刺盾：<select id="quotaShield"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></label>
-              <label>地鼠：<select id="quotaMole"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></label>
-              <label>大餅：<select id="quotaCookie"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></label>
-              <label>文書：<select id="quotaClerk"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></label>
-              <label>指揮：<select id="quotaCommander"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></label>
+              <label>劍盾：<select id="quota-swordshield"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></label>
+              <label>地鼠：<select id="quota-mole"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></label>
+              <label>大餅：<select id="quota-cookie"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></label>
+              <label>文書：<select id="quota-scribe"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></label>
+              <label>指揮：<select id="quota-commander"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></label>
             </div>
           </div>
 
@@ -390,11 +429,11 @@
           <div class="admin-group">
             <h4>實習名額</h4>
             <div class="quota-grid">
-              <label>刺盾實習：<select id="internShield"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></label>
-              <label>地鼠實習：<select id="internMole"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></label>
-              <label>大餅實習：<select id="internCookie"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></label>
-              <label>文書實習：<select id="internClerk"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></label>
-              <label>指揮實習：<select id="internCommander"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></label>
+              <label>劍盾實習：<select id="quota-intern-swordshield"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></label>
+              <label>地鼠實習：<select id="quota-intern-mole"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></label>
+              <label>大餅實習：<select id="quota-intern-cookie"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></label>
+              <label>文書實習：<select id="quota-intern-scribe"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></label>
+              <label>指揮實習：<select id="quota-intern-commander"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></label>
             </div>
           </div>
 
@@ -410,7 +449,7 @@
       <div class="stats-wrapper full-width">
         <div class="card stat-table">
           <h3 data-l10n="statATitle">A 統計</h3>
-          <table id="admin_statA">
+          <table id="adminStatA">
             <thead>
               <tr>
                 <th data-l10n="colWeapon">武器</th>
@@ -442,7 +481,7 @@
       <div class="table-wrapper full-width">
         <div class="card stat-table">
           <h3 data-l10n="statBTitle">B 統計</h3>
-          <table id="admin_statB">
+          <table id="adminStatB">
             <thead>
               <tr>
                 <th data-l10n="colWeapon">武器</th>
@@ -456,6 +495,38 @@
         <div class="card stat-table">
           <h3 data-l10n="listBTitle">B 隊列表</h3>
           <table id="admin_tableB">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th data-l10n="colUid">UID</th>
+                <th data-l10n="colName">暱稱</th>
+                <th data-l10n="colRank">段位</th>
+                <th data-l10n="colPay">課金</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- C 組統計與列表 (Admin) -->
+      <div class="table-wrapper full-width" id="adminGroupCContainer" style="display:none;">
+        <div class="card stat-table">
+          <h3 data-l10n="statCTitle">C 統計</h3>
+          <table id="adminStatC">
+            <thead>
+              <tr>
+                <th data-l10n="colWeapon">武器</th>
+                <th data-l10n="colCount">次數</th>
+                <th data-l10n="colSuspicious">可疑</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <div class="card stat-table">
+          <h3 data-l10n="listCTitle">C 隊列表</h3>
+          <table id="admin_tableC">
             <thead>
               <tr>
                 <th>#</th>
@@ -485,6 +556,31 @@
   <footer class="site-footer">
     <small data-l10n="copyright">© 2025 插爆提供 — Taiwan is a country.</small>
   </footer>
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+  <script>
+    // Firebase 設定
+    const firebaseConfig = {
+      apiKey: "AIzaSyCTRc7Okx_U1GeJlRYxikqQWPbqw8n6ub4",
+      authDomain: "km2-3b333.firebaseapp.com",
+      databaseURL: "https://km2-3b333-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "km2-3b333",
+      storageBucket: "km2-3b333.firebasestorage.app",
+      messagingSenderId: "335009217905",
+      appId: "1:335009217905:web:68f263e567ec80326ccad0"
+    };
+    firebase.initializeApp(firebaseConfig);
+    var db = firebase.database();
+
+    var eventCode = document.getElementById('verifyCodeA').value; // 自動使用驗證碼A的值
+
+    // 當驗證碼A改變時，自動更新eventCode
+    document.getElementById('verifyCodeA').addEventListener('input', function() {
+      eventCode = this.value;
+      console.log('eventCode已更新為：', eventCode);
+    });
+  </script>
   <script src="js/app.js"></script>
 </body>
 </html>

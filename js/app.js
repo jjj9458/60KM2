@@ -29,6 +29,9 @@ const I18N={
     unfilledATitle:"A盟誰還沒寫",unfilledBTitle:"B盟誰還沒寫",
     statATitle:"A 統計",statBTitle:"B 統計",
     listATitle:"A 詳細清單",listBTitle:"B 詳細清單",
+    unfilledCTitle:"C盟誰還沒寫", // 新增
+    statCTitle:"C 統計",         // 新增
+    listCTitle:"C 詳細清單",     // 新增
     colWeapon:"武器",colCount:"次數",colSuspicious:"可疑",
     colUid:"UID",colName:"暱稱",colRank:"排位",colPay:"課金",colPos:"座標",colTroop:"兵種",
     colIntro:"身分",colActions:"操作",
@@ -77,6 +80,7 @@ const I18N={
     msgCopiedToClipboard: "已複製到剪貼簿！",
     msgNoResultToCopy: "沒有結果可複製！請先執行自動分配。",
     msgPageDataRefreshed: "頁面資料已重新整理！",
+    msgSignupEndDateEarlier: "報名截止日必須至少早於開局日期一天。已自動為您調整。", // 新增
     weaponGridDisplay: { // 新增：武器網格顯示翻譯 (中文到中文)
       categories: {
         "特殊": "特殊",
@@ -140,7 +144,19 @@ const I18N={
     zoomOutTitle: "縮小地圖",
     panResetTitle: "重置視圖",
     hoverHintMap: "滑鼠移至點位或點擊以查看詳細資料。",
-    teamAssignmentTitle: "團隊自動分配" // 新增
+    teamAssignmentTitle: "團隊自動分配", // 新增
+    adminScribe: "文書", // 新增
+    adminCommander: "指揮", // 新增
+    internSuffix: "(實習)", // 新增
+    msgRankLevelRequired: "請選擇小段位！", // 新增 for #1
+    msgSpecialTypeRequired: "請選擇特殊兵種！", // 新增 for #3
+    msgTroopOrWeaponRequired: "「預計玩哪類兵」和「融專兵種」至少需填寫一項！", // 新增 for #3
+    msgPayRequired: "請選擇是否能課金選專！", // 新增 for 報名表單
+    msgIntroRequired: "請選擇您的身分！", // 新增 for 報名表單
+    msgWeaponUidRequired: "請輸入專武登記的遊戲 UID！", // 新增 for 專武登記
+    msgWeaponUidInvalid: "專武登記的遊戲 UID 必須是正整數！", // 新增 for 專武登記
+    msgPosXRequired: "請輸入 X 座標！", // 新增 for 專武登記
+    msgPosYRequired: "請輸入 Y 座標！" // 新增 for 專武登記
   },
   en:{
     siteTitle:"Clown Alliance",
@@ -171,6 +187,9 @@ const I18N={
     unfilledATitle:"Team A Unfilled",unfilledBTitle:"Team B Unfilled",
     statATitle:"Team A Stats",statBTitle:"Team B Stats",
     listATitle:"Team A List",listBTitle:"Team B List",
+    unfilledCTitle:"Team C Unfilled", // 新增
+    statCTitle:"Team C Stats",         // 新增
+    listCTitle:"Team C List",         // 新增
     colWeapon:"Weapon",colCount:"Count",colSuspicious:"Suspicious",
     colUid:"UID",colName:"Name",colRank:"Rank",colPay:"Pay",colPos:"Position",colTroop:"Troop",
     colIntro:"Identity",colActions:"Actions",
@@ -219,6 +238,7 @@ const I18N={
     msgCopiedToClipboard: "Copied to clipboard!",
     msgNoResultToCopy: "No results to copy! Please run auto-assign first.",
     msgPageDataRefreshed: "Page data refreshed!",
+    msgSignupEndDateEarlier: "Signup end date must be at least one day before the game start date. It has been adjusted for you.", // 新增
     weaponGridDisplay: { // 新增：武器網格顯示翻譯 (中文到英文)
       categories: {
         "特殊": "Special",
@@ -282,7 +302,19 @@ const I18N={
     zoomOutTitle: "Zoom Out",
     panResetTitle: "Reset View",
     hoverHintMap: "Hover or tap on a point to see details.",
-    teamAssignmentTitle: "Team Auto Assignment" // 新增
+    teamAssignmentTitle: "Team Auto Assignment", // 新增
+    adminScribe: "Scribe", // 新增
+    adminCommander: "Commander", // 新增
+    internSuffix: "(Intern)", // 新增
+    msgRankLevelRequired: "Please select a rank level!", // Add for #1
+    msgSpecialTypeRequired: "Please select a special troop type!", // Add for #3
+    msgTroopOrWeaponRequired: "Either 'Troop Type' or 'Fusion Weapon' must be selected!", // Add for #3
+    msgPayRequired: "Please select if you can pay for a weapon!", // Add for Signup Form
+    msgIntroRequired: "Please select your identity!", // Add for Signup Form
+    msgWeaponUidRequired: "Please enter the Game UID for weapon registration!", // Add for Weapon Registration
+    msgWeaponUidInvalid: "Game UID for weapon registration must be a positive integer!", // Add for Weapon Registration
+    msgPosXRequired: "Please enter the X coordinate!", // Add for Weapon Registration
+    msgPosYRequired: "Please enter the Y coordinate!" // Add for Weapon Registration
   }
 };
 
@@ -502,23 +534,42 @@ document.querySelectorAll('.nav-btn').forEach(btn => {
     document.querySelectorAll('.view').forEach(v => {
         const isActive = v.id === btn.dataset.target;
         v.classList.toggle('active', isActive);
-        // v.style.display = isActive ? 'block' : 'none'; // 由 CSS .active 控制
     });
     
-    // ensureFormsVisibility(); // 移除，依賴 CSS
-    
-    console.log("分頁切換，觸發資料更新...");
+    const targetViewId = btn.dataset.target;
+
+    // Always refresh basic lists and general stats
     refreshSignupList();
-    refresh();
-    if (isAdmin) {
-      if (btn.dataset.target === 'admin') { // 如果切換到管理員頁面
-          updateAdminSection(); // 確保管理員區塊已渲染
-          loadSettings(); // 載入設定
+    updateSignupCount(); // Ensure count is updated on any view change that might follow a submit/delete
+
+    if (targetViewId === 'admin') {
+      if (isAdmin) {
+        updateAdminSection(); // This loads settings, sets up listeners, and calls refreshAdminData()
+        // refresh() might also be needed if admin view shows elements also managed by refresh() directly
+        // but refreshAdminData() should be comprehensive for admin-specific team displays.
+        // To ensure full consistency, calling refresh() too might be safer if there are shared non-team elements.
+        refresh(); 
+      } else {
+        // If trying to access admin without rights, clear the view or show an error
+        // This case should ideally be handled by the verification logic earlier
       }
-      refreshAdminData();
+    } else if (targetViewId === 'detail'){
+      refresh(); // Standard refresh for detail page
+      if (isAdmin) refreshAdminData(); // If admin is logged in, keep admin data potentially in sync too
+    } else {
+      // For other views like signup, weapon, map
+      refresh(); // General refresh might be needed for stats or other elements
+      // If admin is logged in, and these pages also show some data affected by admin settings, consider refreshAdminData
+      if (isAdmin && (targetViewId === 'signup' || targetViewId === 'weapon')) {
+         // If playerCount affects signup (e.g. max count) or weapon view in some way not covered by refresh()
+         // refreshAdminData(); // Potentially, or ensure refresh() covers it.
+      }
     }
     
-    // 手動觸發 introSelect 和 troopType 的 change 事件，以確保在切換視圖後顯隱正確
+    // Fallback refresh if no specific logic hit, or to ensure general state
+    // refresh(); // This might be too broad now, handled by specific cases above.
+
+    // Ensure specific elements like conditional inputs are correctly shown/hidden after view switch
     const introSelectElement = document.getElementById('introSelect');
     if (introSelectElement && document.getElementById('signup')?.classList.contains('active')) {
         introSelectElement.dispatchEvent(new Event('change'));
@@ -585,19 +636,109 @@ function initTroopTypeSelection() {
   }
 }
 
-/* ===== LocalStorage ===== */
-const LS_KEY="clownData";
-const WEAPON_KEY="clownWeapon";
-const getData=()=>JSON.parse(localStorage.getItem(LS_KEY)||"[]");
-const getWeaponData=()=>JSON.parse(localStorage.getItem(WEAPON_KEY)||"[]");
-const saveData=d=>localStorage.setItem(LS_KEY,JSON.stringify(d));
-const saveWeaponData=d=>localStorage.setItem(WEAPON_KEY,JSON.stringify(d));
+/* ===== Realtime Database ===== */
+// 取得所有報名資料
+async function getSignups() {
+  if (!eventCode) {
+    console.error("eventCode is not defined. Cannot get signups.");
+    return []; // 或拋出錯誤
+  }
+  const snapshot = await db.ref(`events/${eventCode}/signups`).once('value');
+  const data = snapshot.val() || {};
+  return Object.entries(data).map(([uid, v]) => ({ uid: v.uid || uid, ...v })); // 確保 uid 被正確映射
+}
 
-/* ===== 表單驗證 ===== */
-function showError(message, form) {
-  // 先清除已有的錯誤訊息
-  clearErrors(form);
+// 儲存或更新單筆報名資料
+async function saveSignup(obj, isNew) {
+  if (!eventCode) {
+    console.error("eventCode is not defined. Cannot save signup.");
+    return; // 或拋出錯誤
+  }
+  const signupRef = db.ref(`events/${eventCode}/signups/${obj.uid}`);
   
+  // 從 obj 解構，並提供預設值以避免 undefined 寫入資料庫
+  const { 
+    uid, name, tier, level, pay, intro, introName, expectSquad, // 報名表單的欄位
+    posX, posY, troopType, specialType, weaponName // 專武表單的欄位
+  } = obj;
+
+  const dataToSave = {
+    uid: uid,
+    nickname: name || null, 
+    rank: tier || null,
+    rankMinor: level || '-', 
+    payPower: pay || null,
+    roleGroup: intro || null,
+    // introName: introName || null, // 可選，如果需要在資料庫儲存
+    lang: document.getElementById('formLangSwitch')?.value || null, // 從表單獲取語言，注意ID正確性
+    expectSquad: expectSquad || null,
+    posX: posX || null, 
+    posY: posY || null,
+    troopsNormal: troopType || null, 
+    troopsSpecial: specialType || null,
+    troopsMerge: weaponName || null,
+    ts: firebase.database.ServerValue.TIMESTAMP
+    // signupOrder 和 squadNo 會在下面處理或後續處理
+  };
+
+  if (isNew) {
+    const counterRef = db.ref(`events/${eventCode}/counter`);
+    const result = await counterRef.transaction(currentCount => {
+      return (currentCount || 0) + 1;
+    });
+    dataToSave.signupOrder = result.snapshot.val();
+    // 對於新用戶，清除可能從 obj 意外傳入的專武欄位，因為新報名時通常不應包含這些
+    // (或者確保呼叫 saveSignup(obj, true) 時 obj 不包含專武欄位)
+    // 這裡假設初次報名 obj 主要包含報名資訊
+    await signupRef.set(dataToSave);
+  } else {
+    // 更新操作 (可能來自報名表單修改，或專武登記)
+    const updates = {};
+    // 顯式檢查並更新所有可能從任一表單傳入的欄位
+    if (name !== undefined) updates.nickname = name; // 來自報名表單
+    if (tier !== undefined) updates.rank = tier;       // 來自報名表單
+    if (level !== undefined) updates.rankMinor = level || '-';// 來自報名表單
+    if (pay !== undefined) updates.payPower = pay;     // 來自報名表單
+    if (intro !== undefined) updates.roleGroup = intro;  // 來自報名表單
+    if (expectSquad !== undefined) updates.expectSquad = expectSquad; // 來自報名表單
+    // lang 通常在 dataToSave 中已處理，除非也允許單獨更新
+
+    // 專武相關欄位
+    if (posX !== undefined) updates.posX = posX;
+    if (posY !== undefined) updates.posY = posY;
+    if (troopType !== undefined) updates.troopsNormal = troopType;
+    if (specialType !== undefined) updates.troopsSpecial = specialType;
+    if (weaponName !== undefined) updates.troopsMerge = weaponName;
+
+    updates.ts = firebase.database.ServerValue.TIMESTAMP; // 總是更新時間戳
+    
+    if (Object.keys(updates).length > 1) { // 確保除了ts外有其他更新
+      await signupRef.update(updates);
+    } else {
+      // 如果 obj 中沒有任何可更新的欄位 (例如，用戶提交了一個已存在的UID但未做任何修改)
+      // 也可以選擇不執行任何操作，或者只更新時間戳
+      console.log("No new data provided for update, only timestamp will be updated.");
+      await signupRef.update({ ts: firebase.database.ServerValue.TIMESTAMP });
+    }
+  }
+}
+
+// 刪除單筆報名資料
+async function removeSignup(uid) {
+  if (!eventCode) {
+    console.error("eventCode is not defined. Cannot remove signup.");
+    return; // 或拋出錯誤
+  }
+  // 同時也考慮是否需要減少 counter，這取決於你的業務邏輯
+  // 例如，如果 signupOrder 是嚴格連續的，則刪除時不應動 counter
+  // 如果 counter 只是總報名數，則可以考慮減少
+  // 這裡暫不處理 counter 的減少
+  await db.ref(`events/${eventCode}/signups/${uid}`).remove();
+}
+
+/* ===== 表單驗證輔助函數 (移至全域) ===== */
+function showError(message, form) {
+  clearErrors(form);
   const errorDiv = document.createElement('div');
   errorDiv.className = 'error-message';
   errorDiv.textContent = message;
@@ -611,54 +752,137 @@ function clearErrors(form) {
   form.querySelectorAll('.error-message').forEach(el => el.remove());
 }
 
+/* ===== 全域表格更新輔助函數 ===== */
+function updateTable(data, tableId, lang) {
+  const tbody = document.querySelector(`#${tableId} tbody`);
+  if (!tbody) return;
+  tbody.innerHTML = data
+    .sort((a, b) => (a.uid || 0) - (b.uid || 0)) // 增加對 uid 可能不存在的保護
+    .map((r, i) => `
+      <tr>
+        <td>${i + 1}</td>
+        <td>${r.uid || 'N/A'}</td>
+        <td>${r.nickname || 'N/A'}</td>
+        <td>${(I18N[lang]?.rankDisplay?.[r.rank] || r.rank || 'N/A' )}${r.rankMinor && r.rankMinor !== '-' ? r.rankMinor : ''}</td>
+        <td>${r.payPower === 'yes' ? '✓' : (r.payPower === 'no' ? '✗' : 'N/A')}</td>
+      </tr>
+    `).join('');
+}
+
+function updateWeaponStats(weaponData, tableId, lang, teamsDataForFiltering, teamKey) {
+  const tbody = document.querySelector(`#${tableId} tbody`);
+  if (!tbody) return;
+  
+  let filteredWeaponData = weaponData;
+  if (teamsDataForFiltering && teamKey && teamsDataForFiltering[teamKey]) {
+    const teamUIDs = new Set(teamsDataForFiltering[teamKey].map(p => p.uid));
+    filteredWeaponData = weaponData.filter(w => teamUIDs.has(w.uid));
+  }
+
+  const stats = {};
+  filteredWeaponData.forEach(w => {
+    if (w.weaponName) { // 只統計 weaponName 存在的資料
+      stats[w.weaponName] = (stats[w.weaponName] || 0) + 1;
+    }
+  });
+  
+  tbody.innerHTML = Object.entries(stats)
+    .sort(([,a], [,b]) => b - a)
+    .map(([name, count]) => `
+      <tr>
+        <td>${I18N[lang]?.weaponGridDisplay?.weapons?.[name] || name}</td>
+        <td>${count}</td>
+        <td>${count > 5 ? '⚠️' : ''}</td>
+      </tr>
+    `).join('');
+}
+
 /* ===== 報名者列表 ===== */
-function refreshSignupList() {
+async function refreshSignupList() {
   const tbody = document.querySelector('#signupList tbody');
-  const data = getData();
-  const lang = document.getElementById('langSwitch').value;
+  if (!tbody) return; // 如果 tbody 不存在，提前退出
+
+  const data = await getData();
+  const lang = document.getElementById('langSwitch')?.value || 'zh';
   const i18n = I18N[lang];
   
   tbody.innerHTML = data
-    .sort((a, b) => a.timestamp - b.timestamp)
+    .sort((a, b) => (a.signupOrder || a.ts || 0) - (b.signupOrder || b.ts || 0)) // 按報名次序或時間戳排序
     .map((r, i) => `
       <tr data-uid="${r.uid}">
-        <td>${i + 1}</td>
+        <td>${r.signupOrder || (i + 1)}</td> <!-- 優先顯示 signupOrder，否則用行號 -->
         <td class="uid-cell">${r.uid}</td>
-        <td>${r.name}</td>
-        <td>${i18n.rankDisplay[r.tier]}${r.level !== '-' ? r.level : ''}</td>
-        <td>${r.pay === 'yes' ? '✓' : '✗'}</td>
-        <td>${i18n.introDisplay[r.intro]}${r.introName ? ` (${r.introName})` : ''}</td>
+        <td>${r.nickname || 'N/A'}</td>
+        <td>${(i18n.rankDisplay && r.rank ? i18n.rankDisplay[r.rank] : r.rank) || 'N/A'}${(r.rankMinor && r.rankMinor !== '-' ? r.rankMinor : '')}</td>
+        <td>${r.payPower === 'yes' ? '✓' : (r.payPower === 'no' ? '✗' : 'N/A')}</td>
+        <td>${(i18n.introDisplay && r.roleGroup ? i18n.introDisplay[r.roleGroup] : r.roleGroup) || 'N/A'}${r.introName ? ` (${r.introName})` : ''}</td>
         <td>
-          <button type="button" class="small" onclick="modifySignup(${r.uid})" data-l10n="btnModify">修改</button>
-          <button type="button" class="small danger" onclick="deleteSignup(${r.uid})" data-l10n="btnDelete">刪除</button>
+          <button type="button" class="small" onclick="modifySignup('${r.uid}')" data-l10n="btnModify">修改</button>
+          <button type="button" class="small danger" onclick="deleteSignup('${r.uid}')" data-l10n="btnDelete">刪除</button>
         </td>
       </tr>
     `).join('');
   
-  applyLang();
+  applyLang(); // 確保動態添加的內容也被翻譯
 }
 
-// 修改報名資料
-window.modifySignup = (uid) => {
-  const data = getData();
-  const record = data.find(r => r.uid === uid);
-  if (!record) return;
-  
-  // 填入表單
-  document.getElementById('playerUID').value = record.uid;
-  document.getElementById('playerName').value = record.name;
-  document.getElementById('rankTier').value = record.tier;
-  document.getElementById('rankTier').dispatchEvent(new Event('change'));
-  document.getElementById('rankLevel').value = record.level;
-  document.getElementById('canPaySelect').value = record.pay;
-  document.getElementById('introSelect').value = record.intro;
-  document.getElementById('introSelect').dispatchEvent(new Event('change'));
-  if (record.introName) {
-    document.getElementById('introNameInput').value = record.introName;
+// 修改報名資料 (讓 modifySignup 填充報名表單)
+window.modifySignup = async (uidString) => {
+  const uid = parseInt(uidString); // 確保是數字 UID
+  if (isNaN(uid)) return;
+
+  const signups = await getSignups(); // 從 Realtime DB 獲取最新資料
+  const record = signups.find(r => r.uid === uid);
+  if (!record) {
+    alert('找不到該用戶的報名資料。');
+    return;
   }
   
-  // 滾動到頂部
-  document.getElementById('signupForm').scrollIntoView({ behavior: 'smooth' });
+  // 填入報名表單
+  document.getElementById('playerUID').value = record.uid;
+  document.getElementById('playerUID').readOnly = true; // UID 不允許在修改時變更
+  document.getElementById('playerName').value = record.nickname || '';
+  
+  const rankTierSelect = document.getElementById('rankTier');
+  if (rankTierSelect) {
+    rankTierSelect.value = record.rank || '';
+    rankTierSelect.dispatchEvent(new Event('change')); // 觸發 change 以更新小段位
+  }
+  
+  const rankLevelSelect = document.getElementById('rankLevel');
+  if (rankLevelSelect) {
+    // 等待小段位選項填充完成後再賦值
+    setTimeout(() => { rankLevelSelect.value = record.rankMinor || '-'; }, 100);
+  }
+  
+  const canPaySelect = document.getElementById('canPaySelect');
+  if (canPaySelect) canPaySelect.value = record.payPower || '';
+  
+  const introSelect = document.getElementById('introSelect');
+  if (introSelect) {
+    introSelect.value = record.roleGroup || '';
+    introSelect.dispatchEvent(new Event('change')); // 觸發 change 以更新介紹人輸入框
+  }
+  
+  const introNameInput = document.getElementById('introNameInput');
+  if (introNameInput && record.introName) {
+    introNameInput.value = record.introName;
+  }
+
+  const expectSquadInput = document.getElementById('expectSquadInput');
+  if (expectSquadInput && record.expectSquad) {
+    expectSquadInput.value = record.expectSquad;
+  }
+
+  const formLangSwitch = document.getElementById('formLangSwitch');
+  if (formLangSwitch && record.lang) {
+    formLangSwitch.value = record.lang;
+  }
+  
+  // 滾動到報名表單並給予提示
+  document.getElementById('signup').scrollIntoView({ behavior: 'smooth' });
+  document.querySelector('#navSignup').click(); // 切換到報名頁籤
+  alert('請在報名表單中修改資料，然後重新提交。');
 };
 
 // 刪除報名資料
@@ -693,12 +917,14 @@ window.deleteSignup = (uid) => {
   uidCell.appendChild(cancel);
   
   // 確認按鈕事件
-  confirm.addEventListener('click', () => {
+  confirm.addEventListener('click', async () => {
     if (input.value === uid.toString()) {
-      const data = getData().filter(r => r.uid !== uid);
-      saveData(data);
-      refreshSignupList();
+      // 從 Firebase 刪除此筆資料
+      await removeSignup(uid);
+      // 更新顯示
+      await refreshSignupList();
       refresh();
+      updateSignupCount();
       alert(I18N[lang].msgDeleted);
     } else {
       uidCell.innerHTML = originalContent;
@@ -715,76 +941,80 @@ window.deleteSignup = (uid) => {
 };
 
 /* ===== 報名提交 ===== */
-document.getElementById('submitSignup').addEventListener('click',()=>{
+document.getElementById('submitSignup').addEventListener('click', async ()=>{
   const form = document.getElementById('signupForm');
   clearErrors(form);
-  const lang = document.getElementById('langSwitch').value || 'zh'; // 獲取當前語言
+  const lang = document.getElementById('langSwitch').value || 'zh';
   
   const uid = +document.getElementById('playerUID').value;
   const name = document.getElementById('playerName').value.trim();
+  const expectSquad = document.getElementById('expectSquadInput').value.trim(); // 新增：讀取期望小組
   
   // 驗證
   let hasError = false;
   if(!Number.isInteger(uid) || uid <= 0) {
-    showError("UID 必須是正整數", form);
+    showError(I18N[lang].uidPlaceholder, form);
     hasError = true;
   }
   if(name.length < 2) {
-    showError("暱稱至少需要 2 個字", form);
+    showError(I18N[lang].msgNicknameMinLength, form);
     hasError = true;
   }
   if(!document.getElementById('rankTier').value) {
-    showError("請選擇段位", form);
+    showError(I18N[lang].rankTierDefault, form);
+    hasError = true;
+  }
+  const rankTierValue = document.getElementById('rankTier').value;
+  const rankLevelValue = document.getElementById('rankLevel').value;
+  if (rankTierValue && rankTierValue !== 'none' && rankTierValue !== 'king' && !rankLevelValue) {
+    showError(I18N[lang].msgRankLevelRequired, form);
     hasError = true;
   }
   if(!document.getElementById('canPaySelect').value) {
-    showError("請選擇是否能課金", form);
+    showError(I18N[lang].msgPayRequired, form);
     hasError = true;
   }
   if(!document.getElementById('introSelect').value) {
-    showError("請選擇身分", form);
+    showError(I18N[lang].msgIntroRequired, form);
     hasError = true;
   }
   if(hasError) return;
 
   const obj = {
     uid,
-    name,
-    tier: rankTier.value,
-    level: levelSel.value || '-',
-    pay: canPaySelect.value,
-    intro: introSel.value,
+    name, // 將在 saveSignup 中映射到 nickname
+    tier: rankTier.value, // 將在 saveSignup 中映射到 rank
+    level: levelSel.value || '-', // 將在 saveSignup 中映射到 rankMinor
+    pay: canPaySelect.value, // 將在 saveSignup 中映射到 payPower
+    intro: introSel.value, // 將在 saveSignup 中映射到 roleGroup
     introName: introNameInput.value.trim(),
-    team: 'A',
-    timestamp: Date.now()
+    expectSquad: expectSquad, // 新增：期望小組
   };
 
-  const data = getData();
-  // 檢查是否為修改
-  const index = data.findIndex(d => d.uid === uid);
-  if (index !== -1) {
-    data[index] = obj;
-    saveData(data);
-    alert(I18N[lang].msgModified); // 已使用 I18N
-  } else {
-    data.push(obj);
-    saveData(data);
-    alert(I18N[lang].msgSignupSuccess); // 修改
+  try {
+    // 檢查是否為新報名或修改 (Realtime Database 版本)
+    const snapshot = await db.ref(`events/${eventCode}/signups/${uid}`).once('value');
+    const isNew = !snapshot.exists();
+    
+    await saveSignup(obj, isNew);
+    // alert(I18N[lang].msgSignupSuccess); // 舊的提示
+    if (isNew) {
+      alert(I18N[lang].msgSignupSuccess || "報名成功！");
+    } else {
+      alert(I18N[lang].msgModified || "資料已修改！");
+    }
+    clearFormFields(form);
+    document.getElementById('playerUID').readOnly = false; // 允許重新輸入 UID
+    await refreshSignupList();
+    refresh(); // 假設 refresh 會更新相關統計
+    updateSignupCount();
+  } catch (error) {
+    console.error('報名失敗：', error);
+    alert(I18N[lang].msgError);
   }
-  
-  // 清空表單內容但保留輸入欄位結構
-  clearFormFields(form);
-  
-  // 更新列表
-  refreshSignupList();
-  refresh();
-  
-  // 確保表單輸入欄位顯示
-  setTimeout(ensureFormsVisibility, 10);
-  window.scrollTo({ top: 0, behavior: 'smooth' }); // 新增：滾動到頁面頂部
 });
 
-// 清空表單內容但保留結構
+// 清空表單內容但保留輸入欄位結構
 function clearFormFields(form) {
   // 遍歷所有輸入欄位並清空值
   form.querySelectorAll('input, select').forEach(input => {
@@ -813,90 +1043,125 @@ function clearFormFields(form) {
 // 原始武器資料已移至generateWeaponGrid函數中整合
 
 /* ===== 專武提交 ===== */
-document.getElementById('submitWeapon').addEventListener('click',()=>{
+document.getElementById('submitWeapon').addEventListener('click', async ()=>{
   const form = document.getElementById('weaponForm');
   clearErrors(form);
-  const lang = document.getElementById('langSwitch').value || 'zh'; // 獲取當前語言
+  const lang = document.getElementById('langSwitch').value || 'zh';
   
   const uid = +document.getElementById('weaponUID').value;
   const posX = +document.getElementById('posX').value;
   const posY = +document.getElementById('posY').value;
-  const weaponName = window.selectedWeapon; // 使用全局變數獲取選中的武器
+  const troopTypeValue = document.getElementById('troopType').value;    // 將在 saveSignup 中映射到 troopsNormal
+  const specialTypeValue = document.getElementById('specialType').value; // 將在 saveSignup 中映射到 troopsSpecial
+  const weaponName = window.selectedWeapon; // 將在 saveSignup 中映射到 troopsMerge
   
   // 驗證
   let hasError = false;
+  
+  // UID 驗證
   if(!Number.isInteger(uid) || uid <= 0) {
-    showError("UID 必須是正整數", form);
+    showError(I18N[lang].uidPlaceholder, form);
     hasError = true;
   }
-  if(posX < 0 || posX > 599 || posY < 0 || posY > 599) {
-    showError("座標必須在 0-599 之間", form);
+  
+  // X 座標驗證
+  if (isNaN(posX) || posX < 0 || posX > 599) {
+    showError(I18N[lang].msgCoordRangeError, form);
     hasError = true;
   }
-  if(!document.getElementById('troopType').value) {
-    showError("請選擇兵種", form);
+  
+  // Y 座標驗證
+  if (isNaN(posY) || posY < 0 || posY > 599) {
+    showError(I18N[lang].msgCoordRangeError, form);
     hasError = true;
   }
-  if(!weaponName) {
-    showError("請選擇專武", form);
+  
+  // 兵種驗證
+  if (!troopTypeValue && !weaponName) {
+    showError(I18N[lang].msgTroopOrWeaponRequired, form);
     hasError = true;
   }
-  if(hasError) return;
+  
+  if (troopTypeValue === 'special' && !specialTypeValue) {
+    showError(I18N[lang].msgSpecialTypeRequired, form);
+    hasError = true;
+  }
+  
+  if(hasError) {
+    window.scrollTo({ top: form.offsetTop - 70, behavior: 'smooth' });
+    return;
+  }
 
   const obj = {
     uid,
     posX,
     posY,
-    weaponName,
-    troopType: document.getElementById('troopType').value,
-    specialType: document.getElementById('specialType').value,
-    timestamp: Date.now()
+    troopType: troopTypeValue,    // 用於傳遞給 saveSignup
+    specialType: specialTypeValue,  // 用於傳遞給 saveSignup
+    weaponName: weaponName          // 用於傳遞給 saveSignup
   };
 
-  const data = getWeaponData();
-  data.push(obj);
-  saveWeaponData(data);
-  alert(I18N[lang].msgWeaponRegSuccess); // 修改
-  
-  // 清空表單內容但保留輸入欄位結構
-  clearFormFields(form);
-  
-  // 特殊處理武器表單
-  document.getElementById('specialOptions').classList.add('hidden');
-  
-  // 清除選中的武器
-  window.selectedWeapon = null;
-  document.querySelectorAll('.weapon-button').forEach(btn => {
-    btn.classList.remove('active');
-  });
-  
-  refresh();
-  
-  // 確保表單輸入欄位顯示
-  setTimeout(ensureFormsVisibility, 10);
-  window.scrollTo({ top: 0, behavior: 'smooth' }); // 新增：滾動到頁面頂部
+  try {
+    const playerRef = db.ref(`events/${eventCode}/signups/${uid}`);
+    const snapshot = await playerRef.once('value');
+    let isNewUser = !snapshot.exists(); // 用戶是否為全新用戶
+    let既存資料 = null;
+    let isUpdatingExistingPosition = false;
+
+    if (!isNewUser) { // 如果用戶已存在，獲取其資料
+      既存資料 = snapshot.val();
+      isUpdatingExistingPosition = 既存資料 && 既存資料.posX !== undefined && 既存資料.posX !== null;
+    }
+
+    // isNew 參數現在代表是否為這個 UID 創建一個全新的 signups 節點
+    // 對於專武登記來說，如果 UID 不存在，我們會創建它 (isNewUser = true)
+    // 如果 UID 已存在，我們是更新它 (isNewUser = false)
+    await saveSignup(obj, isNewUser);
+    
+    if (isNewUser) {
+      // UID 不存在，首次登記 (可能是從專武表單直接登記)
+      alert(I18N[lang].msgWeaponRegSuccess || "專武登記成功！"); 
+    } else if (isUpdatingExistingPosition) {
+      // UID 存在，且修改已有的 X 座標
+      alert(I18N[lang].msgWeaponDataUpdated || "專武資料修改成功！"); 
+    } else {
+      // UID 存在，但首次為此 UID 登記 X 座標 (之前可能只有報名資訊)
+      alert(I18N[lang].msgWeaponRegSuccess || "專武首次登記成功！"); 
+    }
+    
+    clearFormFields(form);
+    document.getElementById('specialOptions').classList.add('hidden');
+    window.selectedWeapon = null;
+    document.querySelectorAll('.weapon-button').forEach(btn => {
+      btn.classList.remove('active');
+    });
+    
+    refresh(); // 假設 refresh 會更新相關統計
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } catch (error) {
+    console.error('專武登記失敗：', error);
+    alert(I18N[lang].msgError);
+  }
 });
 
 /* ===== 統計功能 ===== */
-function refresh(){
-  const data = getData();
-  const weaponData = getWeaponData();
-  const lang = document.getElementById('langSwitch')?.value || 'zh'; // Fallback if langSwitch not found
+async function refresh(){
+  const lang = document.getElementById('langSwitch')?.value || 'zh'; 
   const settings = JSON.parse(localStorage.getItem('clownSettings') || '{}');
   const playerCount = settings.playerCount ? parseInt(settings.playerCount, 10) : 40;
+  // console.log('[DEBUG] refresh() - playerCount:', playerCount);
+
+  const data = await getData();
+  // console.log('[DEBUG] refresh() - initial data length:', data.length, 'data[0]?.team:', data[0]?.team);
+  const weaponData = await getWeaponData();
   
-  // 更新計數
   const teams = { A: [], B: [], C: [] };
   data.forEach(r => {
-    // 根據 playerCount 決定如何分配，此處簡化為 UID，實際應有更複雜邏輯
-    // 這部分可以根據您的具體分組需求調整
     if (playerCount === 40) {
-      r.team = 'A'; // 40人全A
+      r.team = 'A';
     } else if (playerCount === 80) {
-      // 80人時，假設UID單雙數分A/B，或依照其他規則
       r.team = parseInt(r.uid.toString().slice(-1)) % 2 === 0 ? 'B' : 'A'; 
     } else if (playerCount === 120) {
-      // 120人時，假設UID末位數分A/B/C
       const lastDigit = parseInt(r.uid.toString().slice(-1));
       if (lastDigit <= 3) r.team = 'A';
       else if (lastDigit <= 6) r.team = 'B';
@@ -904,122 +1169,71 @@ function refresh(){
     }
     if (teams[r.team]) teams[r.team].push(r);
   });
+  // saveData(data); // No longer needed here as Firestore is source of truth
+  // console.log('[DEBUG] refresh() - after team assignment, data[0]?.team:', data[0]?.team);
   
   document.getElementById('countA').textContent = teams.A.length;
   const countBEl = document.getElementById('countB');
   if(countBEl) countBEl.textContent = teams.B.length;
-  const countCEl = document.getElementById('countC'); // 假設有 countC 的 HTML 元素
+  const countCEl = document.getElementById('countC');
   if(countCEl) countCEl.textContent = teams.C.length;
   
-  // 更新未填寫名單
-  // 這部分需要根據 playerCount 和實際隊伍分配邏輯調整，暫時簡化
+  const statBoxA = document.getElementById('countA')?.closest('.stat-box');
+  const statBoxB = document.getElementById('countB')?.closest('.stat-box');
+  const statBoxC = document.getElementById('countC')?.closest('.stat-box');
+
+  if (statBoxA) statBoxA.style.display = playerCount >= 40 ? 'block' : 'none'; 
+  if (statBoxB) statBoxB.style.display = playerCount >= 80 ? 'block' : 'none';
+  if (statBoxC) statBoxC.style.display = playerCount === 120 ? 'block' : 'none';
+  
   const unfilledAEl = document.getElementById('unfilledA');
   if (unfilledAEl) {
-    unfilledAEl.innerHTML = '<li>範例未填寫A1</li><li>範例未填寫A2</li>'; // 範例
+    unfilledAEl.innerHTML = '<li>範例未填寫A1</li><li>範例未填寫A2</li>';
     unfilledAEl.style.display = playerCount >= 40 ? 'flex' : 'none';
-    if (unfilledAEl.previousElementSibling) { // 增加檢查
+    if (unfilledAEl.previousElementSibling) {
         unfilledAEl.previousElementSibling.style.display = playerCount >= 40 ? 'block' : 'none';
     }
   }
-  /* // 暫時註解掉有問題的程式碼
-  const unfilledAElement = document.getElementById('unfilledA');
-  if (unfilledAElement && typeof fullA !== 'undefined' && typeof teams !== 'undefined' && teams.A) {
-    unfilledAElement.innerHTML = fullA
-      .filter(n => !teams.A.some(r => r.uid.toString() === n))
-      .map(n => `<li>${n}</li>`)
-      .join('');
-  }
-  */
 
   const unfilledBEl = document.getElementById('unfilledB');
   if (unfilledBEl) {
-    unfilledBEl.innerHTML = '<li>範例未填寫B1</li>'; // 範例
+    unfilledBEl.innerHTML = '<li>範例未填寫B1</li>';
     unfilledBEl.style.display = playerCount >= 80 ? 'flex' : 'none';
-    if (unfilledBEl.previousElementSibling) { // 增加檢查
+    if (unfilledBEl.previousElementSibling) {
         unfilledBEl.previousElementSibling.style.display = playerCount >= 80 ? 'block' : 'none';
     }
   }
-  /* // 暫時註解掉有問題的程式碼
-  const unfilledBElement = document.getElementById('unfilledB');
-  if (unfilledBElement && typeof fullB !== 'undefined' && typeof teams !== 'undefined' && teams.B) { // 假設有 fullB
-    unfilledBElement.innerHTML = fullB
-      .filter(n => !teams.B.some(r => r.uid.toString() === n))
-      .map(n => `<li>${n}</li>`)
-      .join('');
-  }
-  */
 
-  const unfilledCEl = document.getElementById('unfilledC'); // 假設有 unfilledC 的 HTML 元素
+  const unfilledCEl = document.getElementById('unfilledC');
   if (unfilledCEl) {
-    unfilledCEl.innerHTML = '<li>範例未填寫C1</li>'; // 範例
+    unfilledCEl.innerHTML = '<li>範例未填寫C1</li>';
     unfilledCEl.style.display = playerCount === 120 ? 'flex' : 'none';
-    if (unfilledCEl.previousElementSibling) { // 增加檢查
+    if (unfilledCEl.previousElementSibling) {
         unfilledCEl.previousElementSibling.style.display = playerCount === 120 ? 'block' : 'none';
     }
   }
   
-  // 更新表格
-  function updateTable(data, tableId) {
-    const tbody = document.querySelector(`#${tableId} tbody`);
-    if (!tbody) return; // 如果表格不存在，則不進行操作
-    tbody.innerHTML = data
-      .sort((a, b) => a.uid - b.uid)
-      .map((r, i) => `
-        <tr>
-          <td>${i + 1}</td>
-          <td>${r.uid}</td>
-          <td>${r.name}</td>
-          <td>${(I18N[lang]?.rankDisplay?.[r.tier] || r.tier)}${r.level !== '-' ? r.level : ''}</td>
-          <td>${r.pay === 'yes' ? '✓' : '✗'}</td>
-        </tr>
-      `).join('');
-  }
-  updateTable(teams.A, 'tableA');
+  updateTable(teams.A, 'tableA', lang);
   const tableAEl = document.getElementById('tableA')?.closest('.card');
   if (tableAEl) tableAEl.style.display = playerCount >= 40 ? 'block' : 'none';
   
-  updateTable(teams.B, 'tableB');
+  updateTable(teams.B, 'tableB', lang);
   const tableBEl = document.getElementById('tableB')?.closest('.card');
   if (tableBEl) tableBEl.style.display = playerCount >= 80 ? 'block' : 'none';
   
-  updateTable(teams.C, 'tableC'); // 假設有 tableC 的 HTML 元素
+  updateTable(teams.C, 'tableC', lang);
   const tableCEl = document.getElementById('tableC')?.closest('.card');
   if (tableCEl) tableCEl.style.display = playerCount === 120 ? 'block' : 'none';
   
-  // 更新武器統計
-  function updateWeaponStats(data, tableId) {
-    const tbody = document.querySelector(`#${tableId} tbody`);
-    if (!tbody) return; // 如果表格不存在，則不進行操作
-    const lang = document.getElementById('langSwitch')?.value || 'zh'; // 在函數內部獲取語言設定
-    const stats = {};
-    data.forEach(w => {
-      stats[w.weaponName] = (stats[w.weaponName] || 0) + 1;
-    });
-    
-    tbody.innerHTML = Object.entries(stats)
-      .sort(([,a], [,b]) => b - a)
-      .map(([name, count]) => `
-        <tr>
-          <td>${I18N[lang]?.weaponGridDisplay?.weapons?.[name] || name}</td>
-          <td>${count}</td>
-          <td>${count > 5 ? '⚠️' : ''}</td>
-        </tr>
-      `).join('');
-  }
-  
-  // 武器統計也需要根據 playerCount 調整顯示邏輯
-  const weaponA = weaponData.filter(w => teams.A.some(p => p.uid === w.uid));
-  updateWeaponStats(weaponA, 'statA');
+  updateWeaponStats(weaponData, 'statA', lang, teams, 'A');
   const statAEl = document.getElementById('statA')?.closest('.card');
   if (statAEl) statAEl.style.display = playerCount >= 40 ? 'block' : 'none';
   
-  const weaponB = weaponData.filter(w => teams.B.some(p => p.uid === w.uid));
-  updateWeaponStats(weaponB, 'statB');
+  updateWeaponStats(weaponData, 'statB', lang, teams, 'B');
   const statBEl = document.getElementById('statB')?.closest('.card');
   if (statBEl) statBEl.style.display = playerCount >= 80 ? 'block' : 'none';
   
-  const weaponC = weaponData.filter(w => teams.C.some(p => p.uid === w.uid));
-  updateWeaponStats(weaponC, 'statC'); // 假設有 statC 的 HTML 元素
+  updateWeaponStats(weaponData, 'statC', lang, teams, 'C');
   const statCEl = document.getElementById('statC')?.closest('.card');
   if (statCEl) statCEl.style.display = playerCount === 120 ? 'block' : 'none';
 }
@@ -1198,65 +1412,19 @@ function refreshAdmin() {
 function updateAdminSection() {
   const adminSection = document.getElementById('admin');
   if (!adminSection || !adminSection.classList.contains('active')) {
-    // 如果管理員區塊不存在，或不是當前 active 的 view，則不進行更新，避免不必要的 DOM 操作
     // console.log("Admin section not active or not found, skipping updateAdminSection.");
     return;
   }
-  console.log("Updating admin section...");
+  // console.log("Updating admin section...");
 
-  // 定義名額項目以便生成 ID 和顯示名稱
-  const quotaItemDetails = [
-    { nameKey: 'specialSwordshield', id: 'swordshield', defaultName: '劍盾' },
-    { nameKey: 'specialMole',        id: 'mole',        defaultName: '地鼠' },
-    { nameKey: 'specialCookie',      id: 'cookie',      defaultName: '大餅' },
-    { nameKey: 'adminScribe',        id: 'scribe',      defaultName: '文書' }, // 假設新增翻譯鍵
-    { nameKey: 'adminCommander',     id: 'commander',   defaultName: '指揮' }  // 假設新增翻譯鍵
-  ];
-
-  const lang = document.getElementById('langSwitch')?.value || 'zh';
-
-  // 填充特殊項目名額
-  const specialQuotaGrid = document.getElementById('adminSpecialQuotaGrid');
-  if (specialQuotaGrid) {
-    specialQuotaGrid.innerHTML = ''; // 清空現有名額項目
-    quotaItemDetails.forEach(item => {
-      const itemName = I18N[lang]?.[item.nameKey] || item.defaultName;
-      const quotaItemDiv = document.createElement('div');
-      quotaItemDiv.className = 'quota-item';
-      quotaItemDiv.innerHTML = `
-        <span>${itemName}：</span>
-        <select id="quota-${item.id}">
-          ${Array.from({length: 6}, (_, i) => `<option value="${i}">${i}</option>`).join('')}
-        </select>
-      `;
-      specialQuotaGrid.appendChild(quotaItemDiv);
-    });
-  }
-
-  // 填充實習名額
-  const internQuotaGrid = document.getElementById('adminInternQuotaGrid');
-  if (internQuotaGrid) {
-    internQuotaGrid.innerHTML = ''; // 清空現有名額項目
-    quotaItemDetails.forEach(item => {
-      const itemName = I18N[lang]?.[item.nameKey] || item.defaultName;
-      const internItemName = `${itemName}${I18N[lang]?.internSuffix || '(實習)'}`; // 假設新增翻譯鍵 internSuffix
-      const quotaItemDiv = document.createElement('div');
-      quotaItemDiv.className = 'quota-item';
-      quotaItemDiv.innerHTML = `
-        <span>${internItemName}：</span>
-        <select id="quota-intern-${item.id}">
-          ${Array.from({length: 6}, (_, i) => `<option value="${i}">${i}</option>`).join('')}
-        </select>
-      `;
-      internQuotaGrid.appendChild(quotaItemDiv);
-    });
-  }
+  // 名額項目相關的 HTML 結構現在直接在 index.html 中定義並具有正確的 ID (例如 quota-swordshield)
+  // 因此此處不再需要動態生成它們的 JavaScript。
+  // 原有的 quotaItemDetails, specialQuotaGrid, internQuotaGrid 相關操作已移除。
   
   // 綁定事件監聽器
   // 注意：對於 exportData, importData, clearData, searchPlayer, searchWeapon 的事件監聽器
   // 通常在 DOMContentLoaded 時綁定一次即可，因為它們的元素在 HTML 中是固定的。
-  // 如果它們之前是在 updateAdminSection 的 innerHTML 賦值後綁定，現在需要確保它們有被綁定。
-  // 假設它們的事件監聽器已在其他地方 (如全域或 DOMContentLoaded) 建立。
+  // (這些功能目前UI元素缺失，相關事件監聽器實際上是無效的)
 
   const saveSettingsButton = document.getElementById('saveAdminSettings');
   if (saveSettingsButton) {
@@ -1284,131 +1452,203 @@ function updateAdminSection() {
     newBtn.addEventListener('click', () => {
       document.querySelectorAll('.player-count-group button').forEach(b => b.classList.remove('active'));
       newBtn.classList.add('active');
+      // 當人數按鈕改變時，也應觸發 refreshAdminData 和 refresh 更新顯示
+      // 同時也要更新 signup 頁面的最大人數顯示
+      const settings = JSON.parse(localStorage.getItem('clownSettings') || '{}');
+      settings.playerCount = parseInt(newBtn.dataset.count, 10);
+      localStorage.setItem('clownSettings', JSON.stringify(settings));
+      updateSignupCount(); 
+      refresh();
+      if(isAdmin) refreshAdminData(); 
     });
   });
   
-  const gameStartDateInput = document.getElementById('gameStartDate');
-  const signupEndDateInput = document.getElementById('signupEndDate');
+  const gameStartDateInput = document.getElementById('adminStartDate');
+  const signupEndDateInput = document.getElementById('adminEndDate');
 
   if (gameStartDateInput) {
     // 移除舊監聽器
     gameStartDateInput.replaceWith(gameStartDateInput.cloneNode(true));
-    document.getElementById('gameStartDate').min = new Date().toISOString().split('T')[0];
-    document.getElementById('gameStartDate').addEventListener('change', validateDates);
+    document.getElementById('adminStartDate').min = new Date().toISOString().split('T')[0];
+    document.getElementById('adminStartDate').addEventListener('change', validateDates);
   }
   if (signupEndDateInput) {
     // 移除舊監聽器
     signupEndDateInput.replaceWith(signupEndDateInput.cloneNode(true));
-    document.getElementById('signupEndDate').min = new Date().toISOString().split('T')[0];
-    document.getElementById('signupEndDate').addEventListener('change', validateDates);
+    document.getElementById('adminEndDate').min = new Date().toISOString().split('T')[0];
+    document.getElementById('adminEndDate').addEventListener('change', validateDates);
   }
   
   // 更新資料顯示 (報名列表、專武列表等)
-  refreshAdminData();
+  refreshAdminData(); // 確保在 admin 頁面激活時資料是最新的
   // 載入設定值到表單 (這應該在名額 select 元素創建後)
   loadSettings(); 
   // 重新套用翻譯 (確保動態加入的內容也被翻譯)
   applyLang(); 
   
-  console.log("Admin section updated.");
+  // console.log("Admin section updated.");
 }
 
 // 更新管理員頁面的資料顯示
-function refreshAdminData() {
-  const data = getData();
-  const weaponData = getWeaponData();
+async function refreshAdminData() {
+  const lang = document.getElementById('langSwitch')?.value || 'zh';
+  const settings = JSON.parse(localStorage.getItem('clownSettings') || '{}');
+  const playerCount = settings.playerCount ? parseInt(settings.playerCount, 10) : 40;
+  // console.log('[DEBUG] refreshAdminData() - playerCount:', playerCount);
+
+  const data = await getData(); // 報名資料
+  // console.log('[DEBUG] refreshAdminData() - initial data length:', data.length, 'data[0]?.team:', data[0]?.team);
+  const weaponData = await getWeaponData(); // 專武資料
   
-  // 更新報名表資料
-  const signupTbody = document.querySelector('#adminSignupList tbody');
-  if (signupTbody) {
-    signupTbody.innerHTML = data
-      .sort((a, b) => a.timestamp - b.timestamp)
-      .map((r, i) => `
-        <tr>
-          <td>${i + 1}</td>
-          <td>${r.uid}</td>
-          <td>${r.name}</td>
-          <td>${r.tier}${r.level}</td>
-          <td>${r.pay === 'yes' ? '✓' : '✗'}</td>
-          <td>${r.intro}${r.introName ? ` (${r.introName})` : ''}</td>
-          <td>
-            <button type="button" class="small" onclick="editSignup(${r.uid})">編輯</button>
-            <button type="button" class="small danger" onclick="deleteSignup(${r.uid})">刪除</button>
-          </td>
-        </tr>
-      `).join('');
-  }
+  const adminTeams = { A: [], B: [], C: [] };
+  data.forEach(r => {
+    let teamAssignment = 'A'; 
+    if (playerCount === 40) {
+      teamAssignment = 'A';
+    } else if (playerCount === 80) {
+      teamAssignment = parseInt(r.uid.toString().slice(-1)) % 2 === 0 ? 'B' : 'A'; 
+    } else if (playerCount === 120) {
+      const lastDigit = parseInt(r.uid.toString().slice(-1));
+      if (lastDigit <= 3) teamAssignment = 'A';
+      else if (lastDigit <= 6) teamAssignment = 'B';
+      else teamAssignment = 'C';
+    }
+    r.team = teamAssignment; 
+    if (adminTeams[teamAssignment]) {
+      adminTeams[teamAssignment].push(r);
+    }
+  });
+  // saveData(data); // No longer needed here as Firestore is source of truth
+  // console.log('[DEBUG] refreshAdminData() - after team assignment, data[0]?.team:', data[0]?.team);
+
+  updateTable(adminTeams.A, 'admin_tableA', lang);
+  updateTable(adminTeams.B, 'admin_tableB', lang);
+  updateTable(adminTeams.C, 'admin_tableC', lang);
+
+  updateWeaponStats(weaponData, 'adminStatA', lang, adminTeams, 'A');
+  updateWeaponStats(weaponData, 'adminStatB', lang, adminTeams, 'B');
+  updateWeaponStats(weaponData, 'adminStatC', lang, adminTeams, 'C');
+
+  const adminContainerA_Stats = document.getElementById('adminStatA')?.closest('.card.stat-table');
+  const adminContainerA_Table = document.getElementById('admin_tableA')?.closest('.card.stat-table');
   
-  // 更新專武登記資料
-  const weaponTbody = document.querySelector('#adminWeaponList tbody');
-  if (weaponTbody) {
-    weaponTbody.innerHTML = weaponData
-      .sort((a, b) => a.timestamp - b.timestamp)
-      .map(w => `
-        <tr>
-          <td>${w.uid}</td>
-          <td>(${w.posX}, ${w.posY})</td>
-          <td>${w.troopType}${w.specialType ? ` (${w.specialType})` : ''}</td>
-          <td>${w.weaponName}</td>
-          <td>
-            <button type="button" class="small" onclick="editWeapon(${w.uid})">編輯</button>
-            <button type="button" class="small danger" onclick="deleteWeapon(${w.uid})">刪除</button>
-          </td>
-        </tr>
-      `).join('');
-  }
+  const adminContainerB_Stats = document.getElementById('adminStatB')?.closest('.card.stat-table');
+  const adminContainerB_Table = document.getElementById('admin_tableB')?.closest('.card.stat-table');
+
+  const adminContainerC = document.getElementById('adminGroupCContainer'); 
+
+  if (adminContainerA_Stats) adminContainerA_Stats.style.display = playerCount >= 40 ? 'block' : 'none'; 
+  if (adminContainerA_Table) adminContainerA_Table.style.display = playerCount >= 40 ? 'block' : 'none'; 
+
+  if (adminContainerB_Stats) adminContainerB_Stats.style.display = playerCount >= 80 ? 'block' : 'none';
+  if (adminContainerB_Table) adminContainerB_Table.style.display = playerCount >= 80 ? 'block' : 'none';
   
-  // 更新統計資料
-  const updateStats = (data, tableId) => {
-    const tbody = document.querySelector(`#${tableId} tbody`);
-    if (!tbody) return;
-    
-    const stats = {};
-    data.forEach(w => {
-      stats[w.weaponName] = (stats[w.weaponName] || 0) + 1;
-    });
-    
-    tbody.innerHTML = Object.entries(stats)
-      .sort(([,a], [,b]) => b - a)
-      .map(([name, count]) => `
-        <tr>
-          <td>${name}</td>
-          <td>${count}</td>
-          <td>${count > 5 ? '⚠️' : ''}</td>
-        </tr>
-      `).join('');
-  };
+  if (adminContainerC) adminContainerC.style.display = playerCount === 120 ? 'flex' : 'none';
   
-  const weaponA = weaponData.filter(w => w.uid.toString().startsWith('1'));
-  const weaponB = weaponData.filter(w => !w.uid.toString().startsWith('1'));
-  updateStats(weaponA, 'adminStatA');
-  updateStats(weaponB, 'adminStatB');
+  applyLang(); 
 }
 
 // 驗證日期
 function validateDates() {
-  const endDate = new Date(document.getElementById('signupEndDate').value);
-  const startDate = new Date(document.getElementById('gameStartDate').value);
-  const lang = document.getElementById('langSwitch').value || 'zh'; // 獲取當前語言
-  
-  if (endDate > startDate) {
-    alert(I18N[lang].msgSignupEndDateError); // 修改
-    document.getElementById('signupEndDate').value = document.getElementById('gameStartDate').value;
+  const signupEndDateInput = document.getElementById('adminEndDate'); // 更正 ID
+  const gameStartDateInput = document.getElementById('adminStartDate'); // 更正 ID
+  // const lang = document.getElementById('langSwitch').value || 'zh'; // 獲取當前語言
+
+  const signupDateValue = signupEndDateInput ? signupEndDateInput.value : null;
+  const gameStartDateValue = gameStartDateInput ? gameStartDateInput.value : null;
+
+  // 新的 validateDates 函數將不再主動修改日期欄位的值，
+  // 也不會彈出基於舊規則的警告。
+  // 主要的驗證和使用者提示/自動校正邏輯由 saveAdminSettings 函數處理。
+  // 這樣可以避免 validateDates 在使用者輸入過程中意外清空欄位，
+  // 進而導致 saveAdminSettings 函數判斷日期為空。
+
+  // 我們可以保留此函數用於未來可能的、更細緻的即時驗證 (例如更新 min/max 屬性)，
+  // 但目前為了修正核心問題，將其破壞性操作移除。
+
+  // 原來的 problematic code:
+  /*
+  if (signupDateValue && gameStartDateValue) {
+    const endDate = new Date(signupDateValue);
+    const startDate = new Date(gameStartDateValue);
+    if (endDate > startDate) { // 舊的判斷邏輯
+      // alert(I18N[lang].msgSignupEndDateError); // 舊的提示
+      // signupEndDateInput.value = gameStartDateValue; // 這是導致問題的賦值
+    }
   }
+  */
 }
 
 // 儲存設定
 function saveAdminSettings() {
-  const gameStartDateInput = document.getElementById('gameStartDate');
-  const signupEndDateInput = document.getElementById('signupEndDate');
+  const gameStartDateInput = document.getElementById('adminStartDate'); // 更正 ID
+  const signupEndDateInput = document.getElementById('adminEndDate'); // 更正 ID
   const playerCountButton = document.querySelector('.player-count-group button.active');
   const verifyCodeAInput = document.getElementById('verifyCodeA');
   const verifyCodeBInput = document.getElementById('verifyCodeB');
-  const lang = document.getElementById('langSwitch').value || 'zh'; // 獲取當前語言
+  const lang = document.getElementById('langSwitch').value || 'zh';
+
+  // --- DEBUGGING: Log raw input values ---
+  console.log("[DEBUG] Raw gameStartDateInput.value:", gameStartDateInput ? gameStartDateInput.value : 'input not found');
+  console.log("[DEBUG] Raw signupEndDateInput.value:", signupEndDateInput ? signupEndDateInput.value : 'input not found');
+  // --- END DEBUGGING ---
+
+  let gameStartDateValue = gameStartDateInput ? gameStartDateInput.value : null;
+  let signupEndDateValue = signupEndDateInput ? signupEndDateInput.value : null;
+
+  // 嘗試轉換 "YYYY / MM / DD" 或 "YYYY/MM/DD" 格式為 "YYYY-MM-DD"
+  const reformatDate = (dateStr) => {
+    if (dateStr && typeof dateStr === 'string') {
+      const match = dateStr.match(/^(\d{4})\s*\/\s*(\d{1,2})\s*\/\s*(\d{1,2})$/);
+      if (match) {
+        const year = match[1];
+        const month = match[2].padStart(2, '0');
+        const day = match[3].padStart(2, '0');
+        return `${year}-${month}-${day}`;
+      }
+    }
+    return dateStr; // 如果不匹配，返回原值
+  };
+
+  gameStartDateValue = reformatDate(gameStartDateValue);
+  signupEndDateValue = reformatDate(signupEndDateValue);
+
+  // 基本空值檢查：這是使用者目前最常看到的錯誤
+  if (!gameStartDateValue || !signupEndDateValue) {
+    alert(I18N[lang].msgValidDateError || "請設定有效的日期！");
+    return;
+  }
+
+  const gameStartDate = new Date(gameStartDateValue);
+  const signupEndDate = new Date(signupEndDateValue + 'T00:00:00'); // 確保是本地日期的午夜
+  // 將日期物件的時間部分設為0，以便只比較日期 (再次確認)
+  gameStartDate.setHours(0, 0, 0, 0);
+  signupEndDate.setHours(0, 0, 0, 0);
+
+  let dayBeforeGameStart = new Date(gameStartDate.getFullYear(), gameStartDate.getMonth(), gameStartDate.getDate() - 1);
+  // dayBeforeGameStart.setDate(gameStartDate.getDate() - 1); //舊的計算方式
+  // dayBeforeGameStart.setHours(0,0,0,0); // 已在 new Date 中隱含處理
+  
+  console.log("[DEBUG] gameStartDate for rule check:", gameStartDate.toISOString());
+  console.log("[DEBUG] signupEndDate for rule check:", signupEndDate.toISOString());
+  console.log("[DEBUG] Calculated dayBeforeGameStart:", dayBeforeGameStart.toISOString());
+
+  // 新規則：報名截止日需要早開局日一天(包括)以上
+  // signupEndDate 應該 <= dayBeforeGameStart
+  if (signupEndDate.getTime() > dayBeforeGameStart.getTime()) {
+    alert(I18N[lang].msgSignupEndDateEarlier || "報名截止日必須至少早於開局日期一天。已自動為您調整。");
+    // 自動調整 signupEndDateInput 的值
+    const year = dayBeforeGameStart.getFullYear();
+    const month = (dayBeforeGameStart.getMonth() + 1).toString().padStart(2, '0'); // JS 月份是 0-indexed
+    const day = dayBeforeGameStart.getDate().toString().padStart(2, '0');
+    signupEndDateInput.value = `${year}-${month}-${day}`;
+    return; 
+  }
 
   const settings = {
-    gameStartDate: gameStartDateInput ? gameStartDateInput.value : null,
-    signupEndDate: signupEndDateInput ? signupEndDateInput.value : null,
+    gameStartDate: gameStartDateValue,
+    // 使用 signupEndDateInput.value 是因為它可能在上面被自動調整了，或者本身就是正確的
+    signupEndDate: signupEndDateInput.value, 
     playerCount: playerCountButton ? parseInt(playerCountButton.dataset.count, 10) : 40,
     verifyCodeA: verifyCodeAInput ? verifyCodeAInput.value : 'AAA',
     verifyCodeB: verifyCodeBInput ? verifyCodeBInput.value : 'BBB',
@@ -1437,21 +1677,21 @@ function saveAdminSettings() {
     }
   });
   
-  // 驗證日期
-  if(!settings.gameStartDate || !settings.signupEndDate) {
-    alert(I18N[lang].msgValidDateError); // 修改
-    return;
-  }
+  // 這個檢查現在應該由 loadSettings 更早地處理，理論上到這裡日期格式是正確的
+  // if(!settings.gameStartDate || !settings.signupEndDate) {
+  //   alert(I18N[lang].msgValidDateError); 
+  //   return;
+  // }
   
   localStorage.setItem('clownSettings', JSON.stringify(settings));
-  alert(I18N[lang].msgSettingsSaved); // 修改
+  alert(I18N[lang].msgSettingsSaved); 
   
   updateSignupCount(); 
   refresh(); 
 }
 
 // 讀取設定
-function loadSettings() {
+async function loadSettings() {
   const adminSection = document.getElementById('admin');
   if (!adminSection || (window.getComputedStyle(adminSection).display === 'none' && !adminSection.classList.contains('active'))) {
     return;
@@ -1459,14 +1699,74 @@ function loadSettings() {
   const settingsJSON = localStorage.getItem('clownSettings');
   const settings = settingsJSON ? JSON.parse(settingsJSON) : {};
   
-  const gameStartDateInput = document.getElementById('gameStartDate');
+  // 在函數開頭就 await getData()，確保 data 在後續使用時是已解析的陣列
+  const resolvedData = await getData(); 
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0); // 標準化到當天午夜
+  const todayStr = today.toISOString().split('T')[0];
+
+  const gameStartDateInput = document.getElementById('adminStartDate'); // 更正 ID
+  const signupEndDateInput = document.getElementById('adminEndDate'); // 更正 ID
+
+  // --- 設定開局日期 (Game Start Date) ---
+  let gameStartDateToSet = settings.gameStartDate || todayStr; // 預設為今天或儲存的值
+  // 確保不會早於今天 (因為 input min 屬性)
+  if (new Date(gameStartDateToSet) < today) {
+    gameStartDateToSet = todayStr;
+  }
   if (gameStartDateInput) {
-    gameStartDateInput.value = settings.gameStartDate || new Date().toISOString().split('T')[0];
+    gameStartDateInput.value = gameStartDateToSet;
+    // 如果瀏覽器因 min 限制清空了值，則強制設回今天
+    if (!gameStartDateInput.value) {
+      gameStartDateInput.value = todayStr;
+    }
   }
   
-  const signupEndDateInput = document.getElementById('signupEndDate');
+  // 以輸入框中實際的開局日為準進行後續計算
+  const actualGameStartDate = gameStartDateInput && gameStartDateInput.value ? 
+                                new Date(gameStartDateInput.value) : 
+                                new Date(todayStr); // 如果 input 不存在或為空，則用今天
+  actualGameStartDate.setHours(0,0,0,0);
+
+  // --- 設定報名截止日 (Signup End Date) ---
+  let signupEndDateToSet = settings.signupEndDate || todayStr; // 預設為今天或儲存的值
+
+  // 1. 確保不會早於今天
+  if (new Date(signupEndDateToSet) < today) {
+    signupEndDateToSet = todayStr;
+  }
+
+  // 2. 根據新規則：必須至少早於開局日一天
+  let dayBeforeGameStart = new Date(actualGameStartDate);
+  dayBeforeGameStart.setDate(actualGameStartDate.getDate() - 1);
+  dayBeforeGameStart.setHours(0,0,0,0);
+
+  if (new Date(signupEndDateToSet).getTime() > dayBeforeGameStart.getTime()) {
+    signupEndDateToSet = dayBeforeGameStart.toISOString().split('T')[0];
+  }
+
+  // 3. 如果經過上述調整後，報名截止日又早於今天了 (例如開局日就是今天，導致前一天是過去)
+  //    則將報名截止日也設為今天 (因為不能選擇過去的日期)
+  if (new Date(signupEndDateToSet) < today) {
+    signupEndDateToSet = todayStr;
+  }
+
   if (signupEndDateInput) {
-    signupEndDateInput.value = settings.signupEndDate || new Date().toISOString().split('T')[0];
+    signupEndDateInput.value = signupEndDateToSet;
+    // 如果瀏覽器因 min 限制清空了值，則強制設回計算出的安全值
+    if (!signupEndDateInput.value) {
+      // 重新計算一次最安全的 fallback
+      let fallbackDayBefore = new Date(actualGameStartDate);
+      fallbackDayBefore.setDate(actualGameStartDate.getDate() - 1);
+      if (fallbackDayBefore < today) { // 如果開局日前一天是過去
+        signupEndDateInput.value = todayStr; // 截止日只能是今天
+      } else {
+        signupEndDateInput.value = fallbackDayBefore.toISOString().split('T')[0];
+      }
+      // 終極 fallback，如果上面還失敗
+      if (!signupEndDateInput.value) signupEndDateInput.value = todayStr;
+    }
   }
   
   const verifyCodeAInput = document.getElementById('verifyCodeA');
@@ -1526,12 +1826,12 @@ function loadSettings() {
   const teamAssign = JSON.parse(localStorage.getItem('clownTeamAssign') || '{}');
   const teamAssignTextEl = document.getElementById('teamAssignText');
   if (teamAssign && teamAssignTextEl) { // 檢查 teamAssign 是否存在
-    const data = getData();
+    // const data = getData(); // 移除此處重複且錯誤的 getData() 調用
     const lang = document.getElementById('langSwitch')?.value || 'zh';
 
     // 獲取各隊的玩家資料
     const getTeamPlayerData = (teamUids) => 
-      teamUids.map(uid => data.find(p => p.uid == uid)).filter(Boolean);
+      teamUids.map(uid => resolvedData.find(p => p.uid == uid)).filter(Boolean); // 使用 resolvedData
 
     const teamAData = getTeamPlayerData(teamAssign.teamA || []);
     const teamBData = getTeamPlayerData(teamAssign.teamB || []);
@@ -1562,7 +1862,6 @@ function loadSettings() {
     teamAssignTextEl.textContent = resultText.trim();
   }
 }
-
 // 自動分盟
 function autoAssignTeams() {
   const data = getData();
@@ -2096,16 +2395,17 @@ function initDebugPanel() {
 }
 
 // 初始化報名計數器
-function updateSignupCount() {
-  const signupData = getData();
+async function updateSignupCount() {
+  const signupData = await getData();
   const currentCount = document.getElementById('currentSignupCount');
   const maxCount = document.getElementById('maxSignupCount');
   
   if (currentCount && maxCount) {
     currentCount.textContent = signupData.length;
-    // 最大人數可以從設定中讀取，預設40
-    const maxSignup = localStorage.getItem('maxSignupCount') || 40;
-    maxCount.textContent = maxSignup;
+    // 從 clownSettings 讀取最大人數，預設40
+    const settings = JSON.parse(localStorage.getItem('clownSettings') || '{}');
+    const playerCount = settings.playerCount ? parseInt(settings.playerCount, 10) : 40;
+    maxCount.textContent = playerCount.toString();
   }
 }
 
@@ -2157,4 +2457,34 @@ function createDebugPanel() {
 function testFormInputs() {
   console.log("testFormInputs 已被移除。");
 }
+
+// 輔助函數：更新玩家列表格 (用於管理員頁面)
+// 預留位置，目前未實現完整功能
+function refreshPlayerTable(query = '') {
+  // console.log('refreshPlayerTable called with query:', query);
+  // 此函數的完整實現被省略，若要啟用管理員的玩家列表搜尋和管理，需完成此處邏輯
+}
+
+// 輔助函數：更新專武列表格 (用於管理員頁面)
+// 預留位置，目前未實現完整功能
+function refreshWeaponTable(query = '') {
+  // console.log('refreshWeaponTable called with query:', query);
+  // 此函數的完整實現被省略，若要啟用管理員的專武列表搜尋和管理，需完成此處邏輯
+}
+
+// ===== Legacy LocalStorage Compatibility Wrappers =====
+// 用於兼容舊有程式碼中對 getData/getWeaponData/saveData/saveWeaponData 的呼叫
+async function getData() {
+  return await getSignups();
+}
+async function getWeaponData() {
+  return await getSignups();
+}
+function saveData(d) {
+  console.warn('saveData() 已棄用，請改用 Firebase 儲存函式');
+}
+function saveWeaponData(d) {
+  console.warn('saveWeaponData() 已棄用，請改用 Firebase 儲存函式');
+}
+
 
