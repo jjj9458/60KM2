@@ -196,7 +196,63 @@ const I18N={
       tank: "盾兵",
       cavalry: "騎兵",
       special: "特殊"
-    }
+    },
+    // 新增由使用者要求檢查後加入的鍵值
+    msgUserNotFoundConfirm: "找不到該用戶的報名資料",
+    msgModifySignupPrompt: "請在報名表單中修改資料，然後重新提交",
+    msgDeleteConfirmGeneric: "確定要刪除嗎？",
+    msgActionIrreversible: "此操作不可復原，是否繼續？",
+    msgClearManualOverridesConfirm: "確定要清除所有手動/期望設定並重新分隊嗎？",
+    msgErrorInvalidUID: "無效的UID: 必須為正整數",
+    msgErrorModifyingMissingKey: "錯誤：正在修改資料但Firebase Key遺失。",
+    promptEnterAdminCode: "管理員驗證碼？",
+    btnConfirm: "確認",
+    btnCancel: "取消",
+    optionOccupied: "(已占用)",
+    optionMine: "(我的)",
+    warnUnknownRankProcessedAsNone: "未知段位: \'%rank%\' (將視為 \'none\' 段位處理) for player:",
+    verifyHintTitleTesting: "驗證碼提示 (測試用 - 明文密碼):",
+    verifyHintLoading: "讀取中...",
+    verifyHintErrorLoading: "讀取提示時發生錯誤。",
+    verifyHintCannotReadAny: "無法從資料庫讀取任何團隊的驗證碼資訊。",
+    // HTML and JS dynamic content additions
+    siteHtmlTitle: "九萬畝插爆聯盟系統",
+    verifyHintUsageNote: "僅供插爆使用",
+    lblCurrentManagedTeam: "目前管理團隊：",
+    txtTeamUnspecified: "未指定",
+    placeholderAdminPassCurrent: "目前: ",
+    placeholderAdminPassToModify: " (輸入新密碼修改)",
+    placeholderAdminPassNew: "輸入新密碼",
+    adminSectionTitleDateSettings: "日期設定",
+    adminSectionTitlePlayerCount: "進場人數",
+    playerCountBtn40: "40人",
+    playerCountBtn80: "80人",
+    playerCountBtn120: "120人",
+    adminSectionTitleSpecialQuotas: "特殊項目名額",
+    lblQuotaSwordShield: "劍盾：",
+    lblQuotaMole: "地鼠：",
+    lblQuotaCookie: "大餅：",
+    lblQuotaScribe: "文書：",
+    lblQuotaCommander: "指揮：",
+    adminSectionTitleInternQuotas: "實習名額",
+    lblInternQuotaSwordShield: "劍盾實習：",
+    lblInternQuotaMole: "地鼠實習：",
+    lblInternQuotaCookie: "大餅實習：",
+    lblInternQuotaScribe: "文書實習：",
+    lblInternQuotaCommander: "指揮實習：",
+    btnFullReassign: "完全重新分隊",
+    btnDeleteAllData: "刪除全部資料",
+    copyrightText: "© 2025 插爆提供",
+    defaultOptionSelectTeam: "--選擇隊伍--",
+    defaultOptionSelectOrder: "--選擇編號--",
+    // 隊伍標籤
+    teamLabelA: "A隊",
+    teamLabelB: "B隊",
+    teamLabelC: "C隊",
+    // 期望小組
+    expectSquadLabel: "期望小組：",
+    expectSquadPlaceholder: "跟你的好朋友輸入一致",
+    totalPlayers: "總人數" // 新增：總人數中文翻譯
   },
   en:{
     siteTitle:"SKY ⚣ OPG",
@@ -392,13 +448,69 @@ const I18N={
       tank: "Tank",
       cavalry: "Cavalry",
       special: "Special"
-    }
+    },
+    // Added keys based on user request check
+    msgUserNotFoundConfirm: "User signup data not found",
+    msgModifySignupPrompt: "Please modify the data in the signup form and submit again",
+    msgDeleteConfirmGeneric: "Are you sure to delete?",
+    msgActionIrreversible: "This action cannot be undone. Continue?",
+    msgClearManualOverridesConfirm: "Are you sure to clear all manual/expected settings and reassign teams?",
+    msgErrorInvalidUID: "Invalid UID: Must be a positive integer",
+    msgErrorModifyingMissingKey: "Error: Modifying data but Firebase Key is missing.",
+    promptEnterAdminCode: "Admin code?",
+    btnConfirm: "Confirm",
+    btnCancel: "Cancel",
+    optionOccupied: "(Occupied)",
+    optionMine: "(Mine)",
+    warnUnknownRankProcessedAsNone: "Unknown rank: \'%rank%\' (will be treated as \'none\' rank) for player:",
+    verifyHintTitleTesting: "Verification Code Hint (Testing - Plaintext Passwords):",
+    verifyHintLoading: "Loading...",
+    verifyHintErrorLoading: "Error loading hints.",
+    verifyHintCannotReadAny: "Cannot read verification code information for any team from the database.",
+    // HTML and JS dynamic content additions
+    siteHtmlTitle: "SKY ⚣ OPG Alliance System",
+    verifyHintUsageNote: "For OPG use only",
+    lblCurrentManagedTeam: "Currently Managing Team: ",
+    txtTeamUnspecified: "Unspecified",
+    placeholderAdminPassCurrent: "Current: ",
+    placeholderAdminPassToModify: " (Enter new to modify)",
+    placeholderAdminPassNew: "Enter new password",
+    adminSectionTitleDateSettings: "Date Settings",
+    adminSectionTitlePlayerCount: "Player Count",
+    playerCountBtn40: "40 Players",
+    playerCountBtn80: "80 Players",
+    playerCountBtn120: "120 Players",
+    adminSectionTitleSpecialQuotas: "Special Item Quotas",
+    lblQuotaSwordShield: "Swordshield: ",
+    lblQuotaMole: "Mole: ",
+    lblQuotaCookie: "Cookie: ",
+    lblQuotaScribe: "Scribe: ",
+    lblQuotaCommander: "Commander: ",
+    adminSectionTitleInternQuotas: "Intern Quotas",
+    lblInternQuotaSwordShield: "Intern Swordshield: ",
+    lblInternQuotaMole: "Intern Mole: ",
+    lblInternQuotaCookie: "Intern Cookie: ",
+    lblInternQuotaScribe: "Intern Scribe: ",
+    lblInternQuotaCommander: "Intern Commander: ",
+    btnFullReassign: "Full Reassign",
+    btnDeleteAllData: "Delete All Data",
+    copyrightText: "© 2025 GGininDer",
+    defaultOptionSelectTeam: "--Select Team--",
+    defaultOptionSelectOrder: "--Select Order--",
+    // Team labels
+    teamLabelA: "Team A",
+    teamLabelB: "Team B",
+    teamLabelC: "Team C",
+    // Expected Squad
+    expectSquadLabel: "Expected Squad:",
+    expectSquadPlaceholder: "Enter the same as your good friend",
+    totalPlayers: "Total Players" // 新增：總人數英文翻譯
   }
 };
 
 /* ===== 新增：段位計分函數 ===== */
 function getRankScore(player) {
-    const tier = player.rank; // e.g., 'gold'
+    let tier = player.rank; // e.g., 'gold'
     const minor = player.rankMinor; // e.g., '1', '2', '3', or '-'
 
     // 段位順序由低到高，以及對應的最低階級基礎分數
@@ -414,12 +526,17 @@ function getRankScore(player) {
         'king':     { baseScore: 2450, levels: 0 }
     };
 
-    if (!tier || !tierSettings[tier]) {
-        console.warn(`未知段位: ${tier} for player:`, player);
-        return 0; // 對於未知或無效的段位返回0分
+    // MODIFICATION START
+    if (!tier || !tierSettings[tier]) { // 如果 tier 無效或未定義
+        // console.warn(`未知段位: '${tier}' (將視為 'none' 段位處理) for player:`, player);
+        const lang = document.getElementById('langSwitch')?.value || 'zh'; // Get language for warning
+        console.warn( (I18N[lang]?.warnUnknownRankProcessedAsNone || "未知段位: '%rank%' (將視為 \'none\' 段位處理) for player:").replace('%rank%', tier), player);
+        tier = 'none'; // 將其視為 'none' 段位
     }
+    // MODIFICATION END
 
-    const setting = tierSettings[tier];
+    const setting = tierSettings[tier]; // 現在 tier 必定是 tierSettings 中的一個有效鍵
+
     if (setting.levels === 0) { // 如 無段位 或 王者
         return setting.baseScore;
     }
@@ -762,7 +879,9 @@ function initVerificationEvents() {
 
 /* ===== Header Admin 按鈕 ===== */
 document.getElementById('adminBtn').addEventListener('click', async () => {
-  const p = prompt(I18N[document.getElementById('langSwitch')?.value || 'zh'].verifyPlaceholder || "管理員驗證碼？"); // Use I18N for prompt
+  // const p = prompt(I18N[document.getElementById('langSwitch')?.value || 'zh'].verifyPlaceholder || "管理員驗證碼？"); // Use I18N for prompt
+  const currentLangForPrompt = document.getElementById('langSwitch')?.value || 'zh';
+  const p = prompt(I18N[currentLangForPrompt]?.promptEnterAdminCode || I18N[currentLangForPrompt]?.verifyPlaceholder || "管理員驗證碼？");
   if (p) { // Check if user entered something
   await verifyCode(p);
   }
@@ -927,7 +1046,7 @@ async function saveSignup(obj, isNewSignupForCounter) {
   } else {
     // 新增時 UID 必須為正整數
     if (!obj.uid || !/^\d+$/.test(String(obj.uid))) {
-      throw new Error("Invalid UID: 必須為正整數");
+      throw new Error(I18N[lang]?.msgErrorInvalidUID || "Invalid UID: 必須為正整數");
     }
     firebaseNodeKey = String(obj.uid);
   }
@@ -1221,11 +1340,12 @@ async function refreshSignupList() {
 // 修改報名資料 (讓 modifySignup 填充報名表單)
 window.modifySignup = async (uidString) => {
   // uidString is the Firebase key, e.g., "-Mxyz123"
+  const lang = document.getElementById('langSwitch')?.value || 'zh'; // Get lang
 
   const signups = await getSignups(); 
   const record = signups.find(r => r.uid === uidString); 
   if (!record) {
-    alert('找不到該用戶的報名資料 (User signup data not found)');
+    alert(I18N[lang]?.msgUserNotFoundConfirm || '找不到該用戶的報名資料');
     return;
   }
   
@@ -1273,7 +1393,7 @@ window.modifySignup = async (uidString) => {
   // 滾動到報名表單並給予提示
   document.getElementById('signup').scrollIntoView({ behavior: 'smooth' });
   document.querySelector('#navSignup').click(); // 切換到報名頁籤
-  alert('請在報名表單中修改資料，然後重新提交 (Please modify the data in the signup form and submit again)');
+  alert(I18N[lang]?.msgModifySignupPrompt || '請在報名表單中修改資料，然後重新提交');
 };
 
 // 新增：用於管理員頁面修改按鈕，跳轉到專武登記頁並填充資料
@@ -1424,8 +1544,7 @@ window.deleteSignup = (buttonElement, uid) => { // uid is the Firebase key, butt
     console.error("deleteSignup: Target cell for UI not found in row data-uid '" + uid + "'.");
     console.log('[deleteSignup] targetCellForUI NOT found. Using confirm().');
     const displayKeyForConfirm = uid.length > 10 ? uid.substring(0,4)+'...'+uid.substring(uid.length-4) : uid;
-    const confirmMessage = (I18N[lang].msgConfirmDelete || "確定要刪除嗎？") +
-                           " (ID: " + displayKeyForConfirm + ")";
+    const confirmMessage = (I18N[lang].msgDeleteConfirmGeneric || "確定要刪除嗎？") + " (ID: " + displayKeyForConfirm + ")";
     if (confirm(confirmMessage)) {
       removeSignup(uid).then(async () => {
         await refreshSignupList();
@@ -1449,11 +1568,13 @@ window.deleteSignup = (buttonElement, uid) => { // uid is the Firebase key, butt
 
   const confirmButton = document.createElement('button');
   confirmButton.className = 'small danger';
-  confirmButton.textContent = '✓';
+  // confirmButton.textContent = '✓';
+  confirmButton.textContent = I18N[lang]?.btnConfirm || '✓';
 
   const cancelButton = document.createElement('button');
   cancelButton.className = 'small';
-  cancelButton.textContent = '✗';
+  // cancelButton.textContent = '✗';
+  cancelButton.textContent = I18N[lang]?.btnCancel || '✗';
 
   console.log('[deleteSignup] About to replace content of targetCellForUI:', targetCellForUI);
   targetCellForUI.innerHTML = '';
@@ -1521,7 +1642,8 @@ document.getElementById('submitSignup').addEventListener('click', async ()=>{
     showError(I18N[lang].uidPlaceholder, form); // Assuming uidPlaceholder is for player's game UID
     hasError = true;
   } else if (isModifying && playerGameUidFromForm === "") { // Should not happen if playerUID is readonly and populated
-     showError("錯誤：正在修改資料但Firebase Key遺失。", form);
+    // showError("錯誤：正在修改資料但Firebase Key遺失。", form);
+    showError(I18N[lang]?.msgErrorModifyingMissingKey || "錯誤：正在修改資料但Firebase Key遺失。", form);
     hasError = true;
   }
 
@@ -1834,15 +1956,15 @@ async function refresh(){
   // Update weapon page preview team select based on playerCount
   const previewTeamSelect = document.getElementById('previewTeamSelect');
   if (previewTeamSelect) {
-    previewTeamSelect.innerHTML = '<option value="">--選擇隊伍--</option>';
+    previewTeamSelect.innerHTML = `<option value="">${I18N[lang]?.defaultOptionSelectTeam || '--選擇隊伍--'}</option>`;
     if (playerCount >= 40) {
-      previewTeamSelect.innerHTML += '<option value="A">A隊</option>';
+      previewTeamSelect.innerHTML += `<option value="A">${I18N[lang]?.teamLabelA || 'A隊'}</option>`;
     }
     if (playerCount >= 80) {
-      previewTeamSelect.innerHTML += '<option value="B">B隊</option>';
+      previewTeamSelect.innerHTML += `<option value="B">${I18N[lang]?.teamLabelB || 'B隊'}</option>`;
     }
     if (playerCount >= 120) {
-      previewTeamSelect.innerHTML += '<option value="C">C隊</option>';
+      previewTeamSelect.innerHTML += `<option value="C">${I18N[lang]?.teamLabelC || 'C隊'}</option>`;
     }
   }
 
@@ -2262,7 +2384,10 @@ async function loadSettings() {
     const adminPasswordInputElement = document.getElementById('adminPasswordInput');
     if (adminPasswordInputElement) {
         // adminPasswordInputElement.value = settings.adminPassword || ''; // Display current plaintext for easy modification (testing only)
-        adminPasswordInputElement.placeholder = settings.adminPassword ? `目前: ${settings.adminPassword} (輸入新密碼修改)` : "輸入新密碼";
+        const currentPassText = I18N[lang]?.placeholderAdminPassCurrent || "目前: ";
+        const toModifyText = I18N[lang]?.placeholderAdminPassToModify || " (輸入新密碼修改)";
+        const newPassText = I18N[lang]?.placeholderAdminPassNew || "輸入新密碼";
+        adminPasswordInputElement.placeholder = settings.adminPassword ? `${currentPassText}${settings.adminPassword}${toModifyText}` : newPassText;
         adminPasswordInputElement.value = ''; // Clear it so user has to type to change
     }
 
@@ -2351,82 +2476,175 @@ async function loadSettings() {
 // 自動分盟
 async function autoAssignTeams() {
   const lang = document.getElementById('langSwitch')?.value || 'zh';
-  // 清空管理列表與結果展示
+  // 清空管理列表与结果展示
   document.querySelectorAll('#adminDetailGroupAContainer tbody,#adminDetailGroupBContainer tbody,#adminDetailGroupCContainer tbody')
     .forEach(tbody => tbody.innerHTML = '');
   const teamAssignText = document.getElementById('teamAssignText'); if (teamAssignText) teamAssignText.textContent = '';
 
-  console.log('[autoAssignTeams] Enhanced auto-assignment with expectSquad');
-  // 決定隊伍符號
-  let playerCountSetting = 40; try {
+  console.log('[autoAssignTeams] === Enhanced auto-assignment with expectSquad START ==='); // 修改：增加標記
+
+  // 决定队伍符号
+  let playerCountSetting = 40; 
+  try {
     const snap = await db.ref(`${DB_ROOT}/${window.currentTeamId}/systemSettings/playerCount`).once('value');
     if (snap.exists()) playerCountSetting = parseInt(snap.val(),10)||40;
-  } catch(e){console.error(e);}  
+    console.log(`[autoAssignTeams] Player count setting: ${playerCountSetting}`);
+  } catch(e){console.error('[autoAssignTeams] Error fetching playerCount:', e);}  
   const teamSymbols = playerCountSetting >= 120 ? ['A','B','C'] : (playerCountSetting >= 80 ? ['A','B'] : ['A']);
-  // 撈資料並計算分數
-  const allPlayers = await getData(); if (!allPlayers.length) { alert(I18N[lang].msgNoData); return; }
-  allPlayers.forEach(p=>p.rankScore = getRankScore(p));
-  // 排除手動覆蓋
-  const pool = allPlayers.filter(p => !p.manualOverride);
-  // 依 expectSquad 分組
-  const groupsByKey = {}, unmarked = [];
+  console.log(`[autoAssignTeams] Determined team symbols: ${teamSymbols.join(', ')}`);
+
+  // 捞资料并计算分数
+  const allPlayers = await getData(); 
+  if (!allPlayers.length) { 
+    alert(I18N[lang].msgNoData); 
+    console.log('[autoAssignTeams] No player data found. Aborting.');
+    return; 
+  }
+  console.log(`[autoAssignTeams] Total players fetched: ${allPlayers.length}`);
+
+  allPlayers.forEach(p => {
+    console.log(`[autoAssignTeams] Processing player for score: UID=${p.uid}, Nick=${p.nickname}, Rank=${p.rank}, Minor=${p.rankMinor}`);
+    p.rankScore = getRankScore(p);
+    console.log(`[autoAssignTeams] UID=${p.uid}, Nick=${p.nickname}, Calculated rankScore: ${p.rankScore}`);
+  });
+
+  // 排除手动覆盖 (实际上，在重新分队前，我们应该清除 manualOverride，或者此逻辑仅用于跳过"绝对不想动"的玩家)
+  // 为了完全重新分配，我们暂时不筛选 manualOverride，而是在最后统一设置
+  // const pool = allPlayers.filter(p => !p.manualOverride); 
+  const pool = [...allPlayers]; // 使用所有玩家
+  console.log(`[autoAssignTeams] Player pool size for assignment: ${pool.length}`);
+
+  // 依 expectSquad 分组
+  const groupsByKey = {};
+  const unmarked = [];
   pool.forEach(p => {
-    const key = (p.expectSquad||'').trim();
-    if (key) { (groupsByKey[key]||(groupsByKey[key]=[])).push(p); }
-    else unmarked.push(p);
+    const key = (p.expectSquad||'').trim().toUpperCase(); // 转为大写以统一处理
+    if (key) { 
+      (groupsByKey[key]||(groupsByKey[key]=[])).push(p);
+      console.log(`[autoAssignTeams] Player UID=${p.uid} (Nick=${p.nickname}) with expectSquad='${key}' added to groupsByKey.`);
+    } else {
+      unmarked.push(p);
+      console.log(`[autoAssignTeams] Player UID=${p.uid} (Nick=${p.nickname}) has no expectSquad, added to unmarked.`);
+    }
   });
-  // 過濾大組 >8
+  console.log('[autoAssignTeams] Initial groupsByKey:', JSON.parse(JSON.stringify(groupsByKey))); // Deep copy for logging
+
+  // 过滤大组 >8 (或可以考虑 > 期望每队人数的1/N，例如每队40人，则 > 5-8人)
+  // 目前简单按8人
   Object.keys(groupsByKey).forEach(key => {
-    if (groupsByKey[key].length > 8) { unmarked.push(...groupsByKey[key]); delete groupsByKey[key]; }
+    if (groupsByKey[key].length > 8) { 
+      console.log(`[autoAssignTeams] expectSquad group '${key}' has ${groupsByKey[key].length} members (more than 8), moving to unmarked.`);
+      unmarked.push(...groupsByKey[key]); 
+      delete groupsByKey[key];
+    }
   });
-  // 建小組單位
-  const groupUnits = Object.values(groupsByKey).map(members => ({ members, totalScore: members.reduce((s,p)=>s+getRankScore(p),0) }));
-  groupUnits.sort((a,b)=>a.totalScore - b.totalScore);
-  // 初始化分隊
-  const teamData = {}, updates = {};
-  teamSymbols.forEach(sym=>teamData[sym]={members:[],score:0});
-  // 分配整組
+  console.log('[autoAssignTeams] groupsByKey after filtering large groups:', JSON.parse(JSON.stringify(groupsByKey)));
+  console.log(`[autoAssignTeams] Unmarked players count after filtering large expectSquad groups: ${unmarked.length}`);
+
+  // 建小组单位
+  const groupUnits = Object.values(groupsByKey).map(members => {
+    const totalScore = members.reduce((s,p)=>s+ (p.rankScore || 0) ,0); // 确保 p.rankScore 存在
+    console.log(`[autoAssignTeams] Creating groupUnit with members: ${members.map(m=>m.nickname).join(', ')}, totalScore: ${totalScore}`);
+    return { members, totalScore };
+  });
+  groupUnits.sort((a,b)=>a.totalScore - b.totalScore); // 按总分由低到高排序，优先分配低分组
+  console.log('[autoAssignTeams] Sorted groupUnits:', groupUnits.map(gu => ({ members: gu.members.map(m=>m.nickname), score: gu.totalScore })));
+
+  // 初始化分队
+  const teamData = {};
+  const updates = {}; // 用于 Firebase 更新
+  teamSymbols.forEach(sym => {
+    teamData[sym] = {members:[], score:0, nextOrder:1}; // 新增 nextOrder 追踪队内编号
+    console.log(`[autoAssignTeams] Initialized teamData for ${sym}`);
+  });
+
+  // 分配整组 (expectSquad groups)
+  console.log('[autoAssignTeams] --- Assigning expectSquad Group Units ---');
   groupUnits.forEach(unit => {
-    const target = teamSymbols.reduce((minT,t)=> teamData[t].score < teamData[minT].score ? t : minT, teamSymbols[0]);
+    // 目标：找到当前总分最低的队伍
+    const targetTeamSymbol = teamSymbols.reduce((minTeam, currentTeam) => 
+        teamData[currentTeam].score < teamData[minTeam].score ? currentTeam : minTeam, 
+    teamSymbols[0]);
+    
+    console.log(`[autoAssignTeams] Assigning groupUnit (Members: ${unit.members.map(m=>m.nickname).join(', ')}; Score: ${unit.totalScore}) to Team ${targetTeamSymbol} (current score: ${teamData[targetTeamSymbol].score})`);
+
     unit.members.forEach(p => {
-      const idx = teamData[target].members.length + 1;
-      const assign = target + String(idx).padStart(2,'0');
-      updates[`${p.uid}/teamAssignment`] = assign;
-      updates[`${p.uid}/orderInTeam`]   = idx;
-      updates[`${p.uid}/manualOverride`] = true;
-      teamData[target].members.push(p);
-      teamData[target].score += p.rankScore;
+      const assignedOrder = teamData[targetTeamSymbol].nextOrder++;
+      const teamAssignment = targetTeamSymbol + String(assignedOrder).padStart(2,'0');
+      
+      updates[`${p.uid}/teamAssignment`] = teamAssignment;
+      updates[`${p.uid}/orderInTeam`]   = assignedOrder;
+      updates[`${p.uid}/manualOverride`] = true; // 标记为已处理（期望小組分配優先）
+
+      teamData[targetTeamSymbol].members.push(p);
+      teamData[targetTeamSymbol].score += (p.rankScore || 0);
+      console.log(`[autoAssignTeams] Player UID=${p.uid} (Nick=${p.nickname}) assigned to ${teamAssignment}. Team ${targetTeamSymbol} new score: ${teamData[targetTeamSymbol].score}`);
     });
   });
-  // 分配散兵
-  unmarked.sort((a,b)=>b.rankScore - a.rankScore).forEach(p => {
-    const target = teamSymbols.reduce((minT,t)=> teamData[t].score < teamData[minT].score ? t : minT, teamSymbols[0]);
-    const idx = teamData[target].members.length + 1;
-    updates[`${p.uid}/teamAssignment`] = target + String(idx).padStart(2,'0');
-    updates[`${p.uid}/orderInTeam`]   = idx;
-    teamData[target].members.push(p);
-    teamData[target].score += p.rankScore;
+
+  // 分配散兵 (unmarked players)
+  console.log('[autoAssignTeams] --- Assigning Unmarked Players ---');
+  // 按分数由高到低排序，优先分配高分者以平衡队伍
+  unmarked.sort((a,b)=>(b.rankScore || 0) - (a.rankScore || 0)); 
+  
+  unmarked.forEach(p => {
+    // 目标：找到当前总分最低的队伍 (或者，如果队伍人数未满，优先分配给人数较少的队伍，再考虑分数)
+    // 简化：仍然优先分数最低的队伍
+    const targetTeamSymbol = teamSymbols.reduce((minTeam, currentTeam) => 
+        teamData[currentTeam].score < teamData[minTeam].score ? currentTeam : minTeam, 
+    teamSymbols[0]);
+
+    console.log(`[autoAssignTeams] Assigning unmarked player UID=${p.uid} (Nick=${p.nickname}, Score=${p.rankScore}) to Team ${targetTeamSymbol} (current score: ${teamData[targetTeamSymbol].score})`);
+    
+    const assignedOrder = teamData[targetTeamSymbol].nextOrder++;
+    const teamAssignment = targetTeamSymbol + String(assignedOrder).padStart(2,'0');
+
+    updates[`${p.uid}/teamAssignment`] = teamAssignment;
+    updates[`${p.uid}/orderInTeam`]   = assignedOrder;
+    // updates[`${p.uid}/manualOverride`] = false; // 对于散兵，可以不清或设为false，表示非期望小組优先
+
+    teamData[targetTeamSymbol].members.push(p);
+    teamData[targetTeamSymbol].score += (p.rankScore || 0);
+    console.log(`[autoAssignTeams] Player UID=${p.uid} (Nick=${p.nickname}) assigned to ${teamAssignment}. Team ${targetTeamSymbol} new score: ${teamData[targetTeamSymbol].score}`);
   });
+
   // 更新到 Firebase
-  await db.ref(`${DB_ROOT}/${window.currentTeamId}/events/signups`).update(updates);
-  console.log('[autoAssignTeams] Updates applied:', updates);
+  console.log('[autoAssignTeams] Preparing to update Firebase with these changes:', JSON.parse(JSON.stringify(updates)));
+  if (Object.keys(updates).length > 0) {
+    await db.ref(`${DB_ROOT}/${window.currentTeamId}/events/signups`).update(updates);
+    console.log('[autoAssignTeams] Firebase updates applied successfully.');
+  } else {
+    console.log('[autoAssignTeams] No updates to apply to Firebase.');
+  }
+  
   // 重新渲染
-  if (isAdmin) await refreshAdminData(playerCountSetting);
-  await refresh();
-  alert(I18N[lang].msgSuccess);
-  // 重新生成並顯示分隊結果文字
+  if (isAdmin) {
+    console.log(`[autoAssignTeams] Refreshing admin data with playerCount: ${playerCountSetting}`);
+    await refreshAdminData(playerCountSetting);
+  }
+  console.log('[autoAssignTeams] Refreshing main data view.');
+  await refresh(); // refresh 内部应该会调用 refreshSignupList 等
+  
+  alert(I18N[lang].msgSuccess || "自動分隊成功！");
+
+  // 重新生成并显示分队结果文字 (这部分可以和 refresh() 或 loadSettings() 里的逻辑合并，避免重复)
   const teamAssignTextEl = document.getElementById('teamAssignText');
   if (teamAssignTextEl) {
-      const allSignupData = await getData();
-      const grouped = { A: [], B: [], C: [] };
-      allSignupData.forEach(p => {
-          if (p.teamAssignment && /^[ABC]/.test(p.teamAssignment)) {
+      console.log('[autoAssignTeams] Generating team assignment text for display...');
+      const finalSignupData = await getData(); // 获取更新后的数据
+      const grouped = { A: [], B: [], C: [] }; // 根据 teamSymbols 初始化
+      teamSymbols.forEach(s => grouped[s] = []);
+
+      finalSignupData.forEach(p => {
+          if (p.teamAssignment && typeof p.teamAssignment === 'string' && teamSymbols.includes(p.teamAssignment.charAt(0))) {
               grouped[p.teamAssignment.charAt(0)].push(p);
           }
       });
+
       Object.values(grouped).forEach(list => list.sort((a, b) => (a.orderInTeam || 0) - (b.orderInTeam || 0)));
+      
       const texts = [];
-      ['A', 'B', 'C'].forEach(letter => {
+      teamSymbols.forEach(letter => {
           const list = grouped[letter];
           if (list.length) {
               const header = letter === 'A'
@@ -2434,17 +2652,20 @@ async function autoAssignTeams() {
                 : letter === 'B'
                   ? `🔹 B 隊 (${list.length}人)：`
                   : `⭐ C 隊 (${list.length}人)：`;
-              const lines = list.map((p, i) => {
-                  const uid = p.player_game_uid || p.uid;
-                  const rank = (I18N[lang]?.rankDisplay?.[p.rank] || p.rank) + (p.rankMinor !== '-' ? p.rankMinor : '');
-                  const ident = (I18N[lang]?.introDisplay?.[p.roleGroup] || p.roleGroup) + (p.introName ? `(${p.introName})` : '');
-                  return `${letter}${String(i + 1).padStart(2, '0')} ${uid} ${p.nickname} ${rank} ${ident}`;
+              const lines = list.map((p, i) => { // i 是排序后的索引，不直接用于编号
+                  const playerGameUidDisplay = p.player_game_uid || p.uid || 'N/A'; // 优先显示 player_game_uid
+                  const rankDisplay = (I18N[lang]?.rankDisplay?.[p.rank] || p.rank || 'N/A') + (p.rankMinor && p.rankMinor !== '-' ? p.rankMinor : '');
+                  const identDisplay = (I18N[lang]?.introDisplay?.[p.roleGroup] || p.roleGroup || 'N/A') + (p.introName ? `(${p.introName})` : '');
+                  // 使用 p.teamAssignment 作为队伍和编号的来源
+                  return `${p.teamAssignment} ${playerGameUidDisplay} ${p.nickname} ${rankDisplay} ${identDisplay}`;
               });
               texts.push(`${header}\n${lines.join('\n')}`);
           }
       });
-      teamAssignTextEl.textContent = texts.length ? texts.join('\n\n') : '';
+      teamAssignTextEl.textContent = texts.length ? texts.join('\n\n') : (I18N[lang]?.msgNoResultToCopy || "尚未進行團隊分配，或無分配結果。");
+      console.log('[autoAssignTeams] Team assignment text generated.');
   }
+  console.log('[autoAssignTeams] === Auto-assignment process END ===');
 }
 
 // 複製分盟結果
@@ -2558,7 +2779,8 @@ async function fullReassignTeams() {
     .forEach(tbody => tbody.innerHTML = '');
   document.getElementById('teamAssignText').textContent = '';
 
-  if (!confirm('確定要清除所有手動/期望設定並重新分隊嗎？')) return;
+  // if (!confirm('確定要清除所有手動/期望設定並重新分隊嗎？')) return;
+  if (!confirm(I18N[lang]?.msgClearManualOverridesConfirm || '確定要清除所有手動/期望設定並重新分隊嗎？')) return;
   const data = await getData();
   const clearUpdates = Object.fromEntries(data.map(p => [`${p.uid}/manualOverride`, false]));
   await db.ref(`${DB_ROOT}/${window.currentTeamId}/events/signups`).update(clearUpdates);
@@ -2829,7 +3051,7 @@ window.addEventListener('DOMContentLoaded', async () => { // Make it async if an
 
       if (previewTeamSelectEl) previewTeamSelectEl.selectedIndex = 0;
       if (previewOrderInTeamSelectEl) {
-        previewOrderInTeamSelectEl.innerHTML = `<option value="">--${I18N[lang].colOrderInTeam || '選擇編號'}--</option>`;
+        previewOrderInTeamSelectEl.innerHTML = `<option value="">--${I18N[lang].colOrderInTeam || (lang === 'zh' ? '選擇編號' : 'Select Order')}--</option>`;
         previewOrderInTeamSelectEl.disabled = true;
       }
       if (orderLabelEl) orderLabelEl.classList.add('hidden');
@@ -2857,16 +3079,38 @@ window.addEventListener('DOMContentLoaded', async () => { // Make it async if an
       document.getElementById('previewPaySelect').value = rec.payPower || '';
       document.getElementById('previewIntroSelect').value = rec.roleGroup || '';
       document.getElementById('previewFormLangSwitch').value = rec.lang || lang;
-      if (previewTeamSelectEl && rec.team) {
-        previewTeamSelectEl.value = rec.team;
-        // Trigger change to populate order if team is pre-selected
-        previewTeamSelectEl.dispatchEvent(new Event('change')); 
-        // Set order if available in record AFTER options are populated
-        if (previewOrderInTeamSelectEl && rec.orderInTeam) {
-            // Wait a tick for options to populate if dispatchEvent is too fast
-            setTimeout(() => { previewOrderInTeamSelectEl.value = rec.orderInTeam; }, 0);
+      
+      // MODIFIED BLOCK TO POPULATE TEAM AND ORDER
+      if (previewTeamSelectEl && rec.teamAssignment && typeof rec.teamAssignment === 'string' && rec.teamAssignment.length > 0) {
+        const teamChar = rec.teamAssignment.charAt(0).toUpperCase();
+        if (['A', 'B', 'C'].includes(teamChar)) {
+          previewTeamSelectEl.value = teamChar;
+          // Trigger change to populate order if team is pre-selected
+          previewTeamSelectEl.dispatchEvent(new Event('change')); 
+          
+          // Set order if available in record AFTER options are populated by the change event
+          if (previewOrderInTeamSelectEl && rec.orderInTeam) {
+              // Wait a tick for options to populate if dispatchEvent is too fast
+              setTimeout(() => { 
+                  // Ensure the team select still has the correct value before setting order
+                  if (previewTeamSelectEl.value === teamChar) {
+                       previewOrderInTeamSelectEl.value = rec.orderInTeam; 
+                  }
+              }, 50); // Use a small delay to ensure options are populated
+          }
+        }
+      } else {
+        // If no teamAssignment, ensure team and order selects are reset (they are already reset at the start of blur)
+        // Explicitly clear/reset them again here.
+        if (previewTeamSelectEl) previewTeamSelectEl.value = '';
+        if (previewOrderInTeamSelectEl) {
+           previewOrderInTeamSelectEl.innerHTML = `<option value="">--${I18N[lang].colOrderInTeam || (lang === 'zh' ? '選擇編號' : 'Select Order')}--</option>`;
+           previewOrderInTeamSelectEl.disabled = true;
+           if (orderLabelEl) orderLabelEl.classList.add('hidden'); // Ensure label is hidden if no team
         }
       }
+      // END OF MODIFIED BLOCK
+      
       weaponRightContainer.dataset.firebaseKey = rec.uid; 
     });
     document.getElementById('previewFormLangSwitch').addEventListener('change', e => {
@@ -2880,24 +3124,66 @@ window.addEventListener('DOMContentLoaded', async () => { // Make it async if an
   // 12. Event listener for previewTeamSelect
   const previewTeamSelectEl = document.getElementById('previewTeamSelect');
   if (previewTeamSelectEl) {
-    previewTeamSelectEl.addEventListener('change', function() {
+    previewTeamSelectEl.addEventListener('change', async function() { // <--- 注意：這裡變成 async function
       const lang = document.getElementById('langSwitch')?.value || 'zh';
       const orderSelectEl = document.getElementById('previewOrderInTeamSelect');
       const orderLabelEl = orderSelectEl ? orderSelectEl.closest('label') : null;
 
       if (!orderSelectEl || !orderLabelEl) return;
 
-      orderSelectEl.innerHTML = ''; // Clear existing options
+      orderSelectEl.innerHTML = ''; // 清空舊選項
       const defaultOrderOptionText = `--${I18N[lang].colOrderInTeam || (lang === 'zh' ? '選擇編號' : 'Select Order')}--`;
       orderSelectEl.add(new Option(defaultOrderOptionText, ''));
 
-      if (this.value) { // If a team is selected
-        for (let i = 1; i <= 40; i++) {
-          orderSelectEl.add(new Option(i.toString(), i.toString()));
+      const selectedTeam = this.value; // 例如 "A", "B", "C"
+      const currentEditingPlayerGameUID = document.getElementById('weaponUID').value.trim();
+
+      if (selectedTeam) { // 如果選擇了一個隊伍
+        const allSignups = await getSignups();
+        
+        // 找出正在編輯的玩家在「已選隊伍中」的「目前編號」(如果存在)
+        let currentOrderOfEditingPlayerInSelectedTeam = null;
+        if (currentEditingPlayerGameUID) {
+            const editingPlayerCompleteRecord = allSignups.find(p => String(p.player_game_uid) === currentEditingPlayerGameUID);
+            if (editingPlayerCompleteRecord && 
+                editingPlayerCompleteRecord.teamAssignment && 
+                editingPlayerCompleteRecord.teamAssignment.startsWith(selectedTeam) && 
+                editingPlayerCompleteRecord.orderInTeam) {
+                currentOrderOfEditingPlayerInSelectedTeam = parseInt(editingPlayerCompleteRecord.orderInTeam, 10);
+            }
         }
+
+        const playersInSelectedTeam = allSignups.filter(p => p.teamAssignment && p.teamAssignment.startsWith(selectedTeam));
+        
+        for (let i = 1; i <= 40; i++) {
+          const option = new Option(i.toString(), i.toString());
+          const playerOccupyingThisNumber = playersInSelectedTeam.find(p => parseInt(p.orderInTeam, 10) === i);
+
+          if (playerOccupyingThisNumber) {
+            // 這個編號已被佔用
+            if (String(playerOccupyingThisNumber.player_game_uid) !== currentEditingPlayerGameUID) {
+              // 被其他玩家佔用
+              option.disabled = true;
+              // option.text += lang === 'zh' ? ' (已占用)' : ' (Occupied)';
+              option.text += ` ${I18N[lang]?.optionOccupied || '(已占用)'}`;
+            } else {
+              // 被正在編輯的玩家自己佔用 (這是他目前的編號)
+              // option.text += lang === 'zh' ? ' (我的)' : ' (Mine)';
+              option.text += ` ${I18N[lang]?.optionMine || '(我的)'}`;
+            }
+          }
+          orderSelectEl.add(option);
+        }
+        
         orderSelectEl.disabled = false;
         orderLabelEl.classList.remove('hidden');
-      } else { // No team selected or default "--選擇隊伍--" selected
+
+        // 嘗試重新選取玩家在此隊伍的目前編號 (如果存在且未被禁用 - 後者理論上不會發生在「我的」編號上)
+        if (currentOrderOfEditingPlayerInSelectedTeam && orderSelectEl.options[currentOrderOfEditingPlayerInSelectedTeam] && !orderSelectEl.options[currentOrderOfEditingPlayerInSelectedTeam].disabled) {
+            orderSelectEl.value = currentOrderOfEditingPlayerInSelectedTeam.toString();
+        }
+
+      } else { // 沒有選擇隊伍 (或選擇了預設的 "--選擇隊伍--")
         orderSelectEl.disabled = true;
         orderLabelEl.classList.add('hidden');
       }
@@ -3245,9 +3531,11 @@ async function populateVerifyHint() {
     console.error('populateVerifyHint: .verify-hint 元素找不到！');
     return;
   }
-  hintDiv.innerHTML = '<p>驗證碼提示 (測試用 - 明文密碼):</p>'; 
+  const lang = document.getElementById('langSwitch')?.value || 'zh'; // Get current language
+
+  hintDiv.innerHTML = `<p>${I18N[lang]?.verifyHintTitleTesting || '驗證碼提示 (測試用 - 明文密碼):'}</p>`; 
   const mainHintContent = [];
-  hintDiv.innerHTML += '<p style="font-size:0.8em; color: #aaa;">讀取中...</p>';
+  hintDiv.innerHTML += `<p style="font-size:0.8em; color: #aaa;">${I18N[lang]?.verifyHintLoading || '讀取中...'}</p>`;
 
   try {
     let hintsAvailable = false;
@@ -3275,13 +3563,13 @@ async function populateVerifyHint() {
       }
     }
     if (hintsAvailable) {
-        hintDiv.innerHTML = '<p>驗證碼提示 (測試用 - 明文密碼):</p>' + mainHintContent.join('<br>');
+        hintDiv.innerHTML = `<p>${I18N[lang]?.verifyHintTitleTesting || '驗證碼提示 (測試用 - 明文密碼):'}</p>` + mainHintContent.join('<br>');
     } else {
-        hintDiv.innerHTML = '<p>驗證碼提示:</p><p>無法從資料庫讀取任何團隊的驗證碼資訊。</p>';
+        hintDiv.innerHTML = `<p>${I18N[lang]?.verifyHintTitleTesting || '驗證碼提示:'}</p><p>${I18N[lang]?.verifyHintCannotReadAny || '無法從資料庫讀取任何團隊的驗證碼資訊。'}</p>`;
     }
   } catch (error) {
     console.error("Error populating verify hints from Firebase:", error);
-    hintDiv.innerHTML = '<p>驗證碼提示:</p><p>讀取提示時發生錯誤。</p>';
+    hintDiv.innerHTML = `<p>${I18N[lang]?.verifyHintTitleTesting || '驗證碼提示:'}</p><p>${I18N[lang]?.verifyHintErrorLoading || '讀取提示時發生錯誤。'}</p>`;
   }
 }
 
@@ -3368,5 +3656,81 @@ const Logger = {
 Logger.init();
 
 // ... existing code ...
+
+// 新增：地圖點渲染與資訊顯示功能
+async function renderMapPoints() {
+  const lang = document.getElementById('langSwitch')?.value || 'zh';
+  const data = await getData();
+  const container = document.getElementById('coordinateMapContainer');
+  if (!container) return;
+  container.innerHTML = '';
+  resetMapDataDisplay();
+  const selectedDirection = document.querySelector('#directionFilter .toggle-btn.active')?.dataset.value || 'all';
+  const selectedGroups = Array.from(document.querySelectorAll('#groupFilter .toggle-btn.active')).map(btn => btn.dataset.value);
+  const points = data.filter(p => p.posX !== undefined && p.posY !== undefined);
+  const filtered = points.filter(p => {
+    const grp = p.teamAssignment ? p.teamAssignment.charAt(0) : null;
+    if (!selectedGroups.includes(grp)) return false;
+    if (selectedDirection !== 'all') {
+      const mid = 299.5, x = p.posX, y = p.posY;
+      if (selectedDirection === 'bl' && !(x <= mid && y <= mid)) return false;
+      if (selectedDirection === 'tl' && !(x <= mid && y > mid)) return false;
+      if (selectedDirection === 'br' && !(x > mid && y <= mid)) return false;
+      if (selectedDirection === 'tr' && !(x > mid && y > mid)) return false;
+    }
+    return true;
+  });
+  if (filtered.length === 0) {
+    container.innerHTML = `<p style="text-align:center; padding: 50px; color: #666;" data-l10n="mapPlaceholder">${I18N[lang].mapPlaceholder}</p>`;
+    applyLang();
+    return;
+  }
+  filtered.forEach(p => {
+    const marker = document.createElement('div');
+    marker.className = 'map-marker';
+    const left = (p.posX / 599) * 100, top = ((599 - p.posY) / 599) * 100;
+    Object.assign(marker.style, {
+      position: 'absolute', left: `${left}%`, top: `${top}%`,
+      width: '12px', height: '12px', backgroundColor: 'rgba(255,0,0,0.7)',
+      border: '2px solid #fff', borderRadius: '50%', transform: 'translate(-50%, -50%)',
+      cursor: 'pointer'
+    });
+    marker.dataset.x = p.posX; marker.dataset.y = p.posY;
+    marker.dataset.nickname = p.nickname || '';
+    marker.dataset.weapon = p.troopsMerge || p.troopsNormal || '';
+    marker.dataset.identity = p.roleGroup || '';
+    marker.dataset.introName = p.introName || '';
+    marker.addEventListener('mouseenter', () => showMapData(marker));
+    marker.addEventListener('click', () => showMapData(marker));
+    marker.addEventListener('mouseleave', () => resetMapDataDisplay());
+    container.appendChild(marker);
+  });
+}
+
+function showMapData(marker) {
+  const lang = document.getElementById('langSwitch')?.value || 'zh';
+  const disp = document.getElementById('mapDataDisplay');
+  if (!disp) return;
+  disp.innerHTML = '';
+  Array.from(document.querySelectorAll('#infoFilter .toggle-btn.active')).forEach(btn => {
+    let val = '';
+    const key = btn.dataset.value;
+    if (key === 'coords') val = `${marker.dataset.x},${marker.dataset.y}`;
+    else if (key === 'name') val = marker.dataset.nickname;
+    else if (key === 'weapon') val = I18N[lang]?.weaponGridDisplay?.weapons?.[marker.dataset.weapon] || marker.dataset.weapon;
+    else if (key === 'identity') val = `${I18N[lang]?.introDisplay?.[marker.dataset.identity] || marker.dataset.identity}${marker.dataset.introName ? ` (${marker.dataset.introName})` : ''}`;
+    const p = document.createElement('p');
+    p.textContent = `${btn.textContent}: ${val}`;
+    disp.appendChild(p);
+  });
+}
+
+function resetMapDataDisplay() {
+  const lang = document.getElementById('langSwitch')?.value || 'zh';
+  const disp = document.getElementById('mapDataDisplay');
+  if (!disp) return;
+  disp.innerHTML = `<p data-l10n="hoverHintMap">${I18N[lang].hoverHintMap}</p>`;
+  applyLang();
+}
 
 

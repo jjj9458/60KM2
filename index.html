@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>九萬啟插爆聯盟系統</title>
+  <title data-l10n="siteHtmlTitle">九萬啟插爆聯盟系統</title>
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
@@ -23,7 +23,7 @@
     <div class="verify-box">
       <h2 class="text-center" data-l10n="verifyTitle">請輸入驗證碼</h2>
       <div class="verify-hint" style="text-align: center;">
-        僅供插爆使用
+        <span data-l10n="verifyHintUsageNote">僅供插爆使用</span>
       </div>
       <div class="verify-content">
         <input type="text" id="verifyCode" placeholder="輸入驗證碼..." data-l10n-placeholder="verifyPlaceholder">
@@ -140,7 +140,7 @@
     <!-- ---------- 專武登記 ---------- -->
     <section id="weapon" class="view">
       <div class="card form-card">
-        <h2 class="text-center" data-l10n="weaponTitle">專武登記</h2>
+        <h2 class="text-center" data-l10n="weaponTitle">專武登記</h2><br>
         <form id="weaponForm">
           <div class="weapon-flex">
             <div class="weapon-left">
@@ -229,21 +229,21 @@
     <!-- ---------- 詳細資料 ---------- -->
     <section id="detail" class="view">
       <div class="container">
-        <h2 data-l10n="detailTitle">詳細資料</h2>
+        <br><h2 data-l10n="detailTitle" style="text-align: center;">詳細資料</h2>
 
         <!-- 統計卡 -->
         <div class="card stats-card">
           <div class="stats-header">
             <div class="stat-box">
-              <div class="stat-title" data-l10n="teamA">A隊</div>
+              <div class="stat-title" data-l10n="teamLabelA">A隊</div>
               <div class="stat-count" id="countA">0</div>
             </div>
             <div class="stat-box" id="statBoxB" style="display:none;">
-              <div class="stat-title" data-l10n="teamB">B隊</div>
+              <div class="stat-title" data-l10n="teamLabelB">B隊</div>
               <div class="stat-count" id="countB">0</div>
             </div>
             <div class="stat-box" id="statBoxC" style="display:none;">
-              <div class="stat-title" data-l10n="teamC">C隊</div>
+              <div class="stat-title" data-l10n="teamLabelC">C隊</div>
               <div class="stat-count" id="countC">0</div>
             </div>
           </div>
@@ -327,7 +327,7 @@
     <!-- ---------- 地圖 ---------- -->
     <section id="map" class="view">
       <div class="card"> <!-- 地圖頁面的主卡片 -->
-        <h2 class="text-center" data-l10n="mapTitle">地圖檢視</h2>
+        <h2 class="text-center" data-l10n="mapTitle">地圖檢視</h2><br>
 
         <!-- 篩選控制項 -->
         <div class="map-filters">
@@ -400,7 +400,7 @@
           <div class="admin-group">
             <h4 data-l10n="adminPasswordSettingsTitle" class="text-center">驗證碼與團隊設定</h4>
             <div class="text-center" style="margin-bottom: 0.5rem;">
-              <span data-l10n="msgCurrentManagedTeamLabel">目前管理團隊：</span><strong id="currentManagedTeam">未指定</strong>
+              <span data-l10n="lblCurrentManagedTeam">目前管理團隊：</span><strong id="currentManagedTeam" data-l10n-default-text="txtTeamUnspecified">未指定</strong>
             </div>
             <div class="inline-group" style="justify-content: center; flex-wrap: wrap;">
               <label style="min-width: 200px;">報名表驗證碼：
@@ -418,7 +418,7 @@
 
           <!-- 日期設定 -->
           <div class="admin-group">
-            <h4>日期設定</h4>
+            <h4 data-l10n="adminSectionTitleDateSettings">日期設定</h4>
             <div class="inline-group">
               <label>開局日期：
                 <input type="date" id="adminStartDate" value="2025-05-09">
@@ -431,36 +431,36 @@
 
           <!-- 進場人數 -->
           <div class="admin-group">
-            <h4>進場人數</h4>
+            <h4 data-l10n="adminSectionTitlePlayerCount">進場人數</h4>
             <div class="player-count-group">
-              <button type="button" class="player-count-btn active" data-count="40">40人</button>
-              <button type="button" class="player-count-btn" data-count="80">80人</button>
-              <button type="button" class="player-count-btn" data-count="120">120人</button>
+              <button type="button" class="player-count-btn active" data-count="40" data-l10n="playerCountBtn40">40人</button>
+              <button type="button" class="player-count-btn" data-count="80" data-l10n="playerCountBtn80">80人</button>
+              <button type="button" class="player-count-btn" data-count="120" data-l10n="playerCountBtn120">120人</button>
               <input type="hidden" id="adminPlayerCount" value="40">
             </div>
           </div>
 
           <!-- 特殊項目名額 -->
           <div class="admin-group">
-            <h4>特殊項目名額</h4>
+            <h4 data-l10n="adminSectionTitleSpecialQuotas">特殊項目名額</h4>
             <div class="quota-grid">
-              <label>劍盾：<select id="quota-swordshield"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></label>
-              <label>地鼠：<select id="quota-mole"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></label>
-              <label>大餅：<select id="quota-cookie"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></label>
-              <label>文書：<select id="quota-scribe"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></label>
-              <label>指揮：<select id="quota-commander"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></label>
+              <label data-l10n="lblQuotaSwordShield">劍盾：<select id="quota-swordshield"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></label>
+              <label data-l10n="lblQuotaMole">地鼠：<select id="quota-mole"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></label>
+              <label data-l10n="lblQuotaCookie">大餅：<select id="quota-cookie"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></label>
+              <label data-l10n="lblQuotaScribe">文書：<select id="quota-scribe"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></label>
+              <label data-l10n="lblQuotaCommander">指揮：<select id="quota-commander"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></label>
             </div>
           </div>
 
           <!-- 實習名額 -->
           <div class="admin-group">
-            <h4>實習名額</h4>
+            <h4 data-l10n="adminSectionTitleInternQuotas">實習名額</h4>
             <div class="quota-grid">
-              <label>劍盾實習：<select id="quota-intern-swordshield"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></label>
-              <label>地鼠實習：<select id="quota-intern-mole"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></label>
-              <label>大餅實習：<select id="quota-intern-cookie"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></label>
-              <label>文書實習：<select id="quota-intern-scribe"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></label>
-              <label>指揮實習：<select id="quota-intern-commander"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></label>
+              <label data-l10n="lblInternQuotaSwordShield">劍盾實習：<select id="quota-intern-swordshield"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></label>
+              <label data-l10n="lblInternQuotaMole">地鼠實習：<select id="quota-intern-mole"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></label>
+              <label data-l10n="lblInternQuotaCookie">大餅實習：<select id="quota-intern-cookie"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></label>
+              <label data-l10n="lblInternQuotaScribe">文書實習：<select id="quota-intern-scribe"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></label>
+              <label data-l10n="lblInternQuotaCommander">指揮實習：<select id="quota-intern-commander"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></label>
             </div>
           </div>
 
@@ -549,9 +549,9 @@
         <div class="button-group" style="margin-bottom: 1rem; display: flex; justify-content: center; gap: 0.5rem;">
           <button type="button" class="primary" id="autoAssignTeams" data-l10n="btnAutoAssign">自動分組</button>
           <button type="button" id="reorderSignupsBtn" class="secondary" data-l10n="btnReorder">重新編號</button>
-          <button type="button" id="fullReassignBtn" class="secondary">完全重新分隊</button>
-          <button type="button" id="copyTeamResult" data-l10n="btnCopyResult">複製結果</button>
-          <button type="button" id="deleteAllDataBtn" class="danger">刪除全部資料</button>
+          <button type="button" id="fullReassignBtn" class="secondary" data-l10n="btnFullReassign">完全重新分隊</button>
+          <button type="button" id="deleteAllDataBtn" class="danger" data-l10n="btnDeleteAllData">刪除全部資料</button>
+          <button type="button" id="copyTeamResult" data-l10n="btnCopyResult">複製結果</button> 
         </div>
         <textarea id="teamAssignText" rows="8" readonly style="width: 100%; background-color: var(--bg-2); color: var(--fg-0); border: 1px solid #444; padding: 0.5rem; resize: vertical;"></textarea>
       </div>
@@ -559,7 +559,7 @@
   </main>
 
   <footer class="site-footer">
-    <small data-l10n="copyright">© 2025 插爆提供 — Taiwan is a country.</small>
+    <small data-l10n="copyrightText">© 2025 插爆提供 — Taiwan is a country.</small>
   </footer>
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
