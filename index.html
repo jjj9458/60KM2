@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>九萬啟插爆聯盟系統</title>
   <link rel="stylesheet" href="css/style.css" />
 </head>
@@ -21,10 +22,8 @@
   <div id="verifyOverlay" class="verify-overlay">
     <div class="verify-box">
       <h2 class="text-center" data-l10n="verifyTitle">請輸入驗證碼</h2>
-      <div class="verify-hint">
-        <p>報名功能：<code>AAA</code></p>
-        <p>專武登記：<code>BBB</code></p>
-        <p>管理員功能：<code>基佬閣</code></p>
+      <div class="verify-hint" style="text-align: center;">
+        僅供插爆使用
       </div>
       <div class="verify-content">
         <input type="text" id="verifyCode" placeholder="輸入驗證碼..." data-l10n-placeholder="verifyPlaceholder">
@@ -82,8 +81,9 @@
           <label data-l10n="payLabel">是否能課金選專：
             <select id="canPaySelect" required>
               <option value="" data-l10n="payDefault">--請選擇--</option>
-              <option value="yes" data-l10n="payYes">是</option>
-              <option value="no" data-l10n="payNo">否</option>
+              <option value="high" data-l10n="payHigh">高</option>
+              <option value="medium" data-l10n="payMedium">中</option>
+              <option value="low" data-l10n="payLow">低</option>
             </select>
           </label>
 
@@ -142,38 +142,77 @@
       <div class="card form-card">
         <h2 class="text-center" data-l10n="weaponTitle">專武登記</h2>
         <form id="weaponForm">
-          <label data-l10n="weaponUidLabel">遊戲 UID：
-            <input type="number" id="weaponUID" min="1" step="1" required placeholder="(限正整數)" data-l10n-placeholder="uidPlaceholder"/>
-          </label>
-          <label data-l10n="posXLabel">X 座標：
-            <input type="number" id="posX" min="0" max="599" step="1" required placeholder="(限制0-599)" data-l10n-placeholder="posXPlaceholder" />
-          </label>
-          <label data-l10n="posYLabel">Y 座標：
-            <input type="number" id="posY" min="0" max="599" step="1" required placeholder="(限制0-599)" data-l10n-placeholder="posYPlaceholder" />
-          </label>
-
-          <!-- 第一層選單 -->
-          <label data-l10n="troopLabel">預計玩哪類兵：
-            <select id="troopType" required>
-              <option value="" disabled selected hidden data-l10n="troopDefault">請選擇兵種</option>
-              <option value="spear" data-l10n="troopSpear">槍</option>
-              <option value="bow" data-l10n="troopBow">弓</option>
-              <option value="tank" data-l10n="troopTank">坦</option>
-              <option value="cavalry" data-l10n="troopCavalry">騎</option>
-              <option value="special" data-l10n="troopSpecial">特殊</option>
-            </select>
-          </label>
-
-          <!-- 第二層選單（預設隱藏） -->
-          <label id="specialOptions" class="hidden" data-l10n="specialLabel">選擇特殊兵種：
-            <select id="specialType" required>
-              <option value="" disabled selected hidden data-l10n="specialDefault">請選擇特殊兵種</option>
-              <option value="swordshield" data-l10n="specialSwordshield">劍盾</option>
-              <option value="mole" data-l10n="specialMole">地鼠</option>
-              <option value="cookie" data-l10n="specialCookie">大餅</option>
-            </select>
-          </label>
-
+          <div class="weapon-flex">
+            <div class="weapon-left">
+              <label data-l10n="weaponUidLabel">遊戲 UID：
+                <input type="number" id="weaponUID" min="1" step="1" required placeholder="(限正整數)" data-l10n-placeholder="uidPlaceholder"/>
+              </label>
+              <label data-l10n="posXLabel">X 座標：
+                <input type="number" id="posX" min="0" max="599" step="1" required placeholder="(限制0-599)" data-l10n-placeholder="posXPlaceholder" />
+              </label>
+              <label data-l10n="posYLabel">Y 座標：
+                <input type="number" id="posY" min="0" max="599" step="1" required placeholder="(限制0-599)" data-l10n-placeholder="posYPlaceholder" />
+              </label>
+              <label data-l10n="troopLabel">預計玩哪類兵：
+                <select id="troopType" required>
+                  <option value="" disabled selected hidden data-l10n="troopDefault">請選擇兵種</option>
+                  <option value="spear" data-l10n="troopSpear">槍</option>
+                  <option value="bow" data-l10n="troopBow">弓</option>
+                  <option value="tank" data-l10n="troopTank">坦</option>
+                  <option value="cavalry" data-l10n="troopCavalry">騎</option>
+                  <option value="special" data-l10n="troopSpecial">特殊</option>
+                </select>
+              </label>
+              <label id="specialOptions" class="hidden" data-l10n="specialLabel">選擇特殊兵種：
+                <select id="specialType" required>
+                  <option value="" disabled selected hidden data-l10n="specialDefault">請選擇特殊兵種</option>
+                  <option value="swordshield" data-l10n="specialSwordshield">劍盾</option>
+                  <option value="mole" data-l10n="specialMole">地鼠</option>
+                  <option value="cookie" data-l10n="specialCookie">大餅</option>
+                </select>
+              </label>
+            </div>
+            <div class="weapon-right">
+              <label data-l10n="nameLabel">遊戲暱稱：
+                <input type="text" id="previewPlayerName" required />
+              </label>
+              <label data-l10n="payLabel">課金範圍：
+                <select id="previewPaySelect" required>
+                  <option value="" data-l10n="payDefault">--請選擇--</option>
+                  <option value="high" data-l10n="payHigh">1000▲</option>
+                  <option value="medium" data-l10n="payMedium">300~1000</option>
+                  <option value="low" data-l10n="payLow">300▼</option>
+                </select>
+              </label>
+              <label data-l10n="introLabel">身分：
+                <select id="previewIntroSelect" required>
+                  <option value="" data-l10n="introDefault">--請選擇--</option>
+                  <option value="newbie" data-l10n="introNewbie">新人</option>
+                  <option value="rookie" data-l10n="introRookie">菜基</option>
+                  <option value="dumb" data-l10n="introDumb">傻屌</option>
+                  <option value="core" data-l10n="introCore">核心</option>
+                </select>
+              </label>
+              <label data-l10n="langLabel">語言：
+                <select id="previewFormLangSwitch" required>
+                  <option value="zh" data-l10n="langZh">中文</option>
+                  <option value="en" data-l10n="langEn">English</option>
+                </select>
+              </label>
+              <label data-l10n="colTeam">隊伍：
+                <select id="previewTeamSelect">
+                  <option value="">--選擇隊伍--</option>
+                  <!-- Options will be dynamically populated by JS -->
+                </select>
+              </label>
+              <label data-l10n="colOrderInTeam" class="hidden">編號：
+                <select id="previewOrderInTeamSelect" disabled>
+                  <option value="">--選擇編號--</option>
+                  <!-- Options will be dynamically populated by JS -->
+                </select>
+              </label>
+            </div>
+          </div>
           <!-- 專武名稱：按鈕表格 -->
           <h3 class="text-center weapon-title" data-l10n="weaponGridTitle">融專兵種</h3>
           <fieldset class="weapon-grid" id="weaponGrid">
@@ -189,117 +228,98 @@
 
     <!-- ---------- 詳細資料 ---------- -->
     <section id="detail" class="view">
-      <!-- 統計卡 -->
-      <div class="card stats-card">
-        <h2 class="text-center" data-l10n="detailTitle">詳細資料</h2>
-        <br>
-        <div class="stats-header">
-          <div class="stat-box"><div class="stat-title">A</div><div class="stat-count" id="countA">0</div></div>
-          <div class="stat-box"><div class="stat-title">B</div><div class="stat-count" id="countB">0</div></div>
-          <div class="stat-box"><div class="stat-title">C</div><div class="stat-count" id="countC">0</div></div>
-        </div>
-        <h3 data-l10n="unfilledATitle">A盟誰還沒寫</h3>
-        <ul id="unfilledA" class="number-list"></ul>
-        <h3 data-l10n="unfilledBTitle">B盟誰還沒寫</h3>
-        <ul id="unfilledB" class="number-list"></ul>
-        <h3 data-l10n="unfilledCTitle">C盟誰還沒寫</h3>
-        <ul id="unfilledC" class="number-list"></ul>
-      </div>
+      <div class="container">
+        <h2 data-l10n="detailTitle">詳細資料</h2>
 
-      <!-- 新佈局容器 -->
-      <!-- A 組統計與列表 -->
-      <div class="stats-wrapper full-width">
-        <div class="card stat-table">
-          <h3 data-l10n="statATitle">A 統計</h3>
-          <table id="statA">
-            <thead>
-              <tr>
-                <th data-l10n="colWeapon">武器</th>
-                <th data-l10n="colCount">次數</th>
-                <th data-l10n="colSuspicious">可疑</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
+        <!-- 統計卡 -->
+        <div class="card stats-card">
+          <div class="stats-header">
+            <div class="stat-box">
+              <div class="stat-title" data-l10n="teamA">A隊</div>
+              <div class="stat-count" id="countA">0</div>
+            </div>
+            <div class="stat-box" id="statBoxB" style="display:none;">
+              <div class="stat-title" data-l10n="teamB">B隊</div>
+              <div class="stat-count" id="countB">0</div>
+            </div>
+            <div class="stat-box" id="statBoxC" style="display:none;">
+              <div class="stat-title" data-l10n="teamC">C隊</div>
+              <div class="stat-count" id="countC">0</div>
+            </div>
+          </div>
+          <p style="text-align: center; margin-top: 1rem;"><span data-l10n="totalPlayers">總人數</span>: <span id="playerCountDisplay">0</span></p>
         </div>
-        <div class="card stat-table">
-          <h3 data-l10n="listATitle">A 隊列表</h3>
-          <table id="tableA">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th data-l10n="colUid">UID</th>
-                <th data-l10n="colName">暱稱</th>
-                <th data-l10n="colRank">段位</th>
-                <th data-l10n="colPay">課金</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
-      </div>
 
-      <!-- B 組統計與列表 -->
-      <div class="table-wrapper full-width">
-        <div class="card stat-table">
-          <h3 data-l10n="statBTitle">B 統計</h3>
-          <table id="statB">
-            <thead>
-              <tr>
-                <th data-l10n="colWeapon">武器</th>
-                <th data-l10n="colCount">次數</th>
-                <th data-l10n="colSuspicious">可疑</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
+        <!-- A 組列表 -->
+        <div class="stats-wrapper full-width" id="detailGroupAContainer">
+          <div class="card stat-table">
+            <h3 data-l10n="listATitle">A 隊列表</h3>
+            <table id="tableA">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th data-l10n="colUid">UID</th>
+                  <th data-l10n="colName">暱稱</th>
+                  <th data-l10n="colPay">課金</th>
+                  <th data-l10n="colPosX">X座標</th>
+                  <th data-l10n="colPosY">Y座標</th>
+                  <th data-l10n="colTroopWeapon">兵種/武器</th>
+                  <th data-l10n="colLang">語言</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- 資料將由 JavaScript 填入 -->
+              </tbody>
+            </table>
+          </div>
         </div>
-        <div class="card stat-table">
-          <h3 data-l10n="listBTitle">B 隊列表</h3>
-          <table id="tableB">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th data-l10n="colUid">UID</th>
-                <th data-l10n="colName">暱稱</th>
-                <th data-l10n="colRank">段位</th>
-                <th data-l10n="colPay">課金</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
-      </div>
 
-      <!-- C 組統計與列表 -->
-      <div class="table-wrapper full-width">
-        <div class="card stat-table">
-          <h3 data-l10n="statCTitle">C 統計</h3>
-          <table id="statC">
-            <thead>
-              <tr>
-                <th data-l10n="colWeapon">武器</th>
-                <th data-l10n="colCount">次數</th>
-                <th data-l10n="colSuspicious">可疑</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
+        <!-- B 組列表 -->
+        <div class="table-wrapper full-width" id="detailGroupBContainer" style="display:none;">
+          <div class="card stat-table">
+            <h3 data-l10n="listBTitle">B 隊列表</h3>
+            <table id="tableB">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th data-l10n="colUid">UID</th>
+                  <th data-l10n="colName">暱稱</th>
+                  <th data-l10n="colPay">課金</th>
+                  <th data-l10n="colPosX">X座標</th>
+                  <th data-l10n="colPosY">Y座標</th>
+                  <th data-l10n="colTroopWeapon">兵種/武器</th>
+                  <th data-l10n="colLang">語言</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- 資料將由 JavaScript 填入 -->
+              </tbody>
+            </table>
+          </div>
         </div>
-        <div class="card stat-table">
-          <h3 data-l10n="listCTitle">C 隊列表</h3>
-          <table id="tableC">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th data-l10n="colUid">UID</th>
-                <th data-l10n="colName">暱稱</th>
-                <th data-l10n="colRank">段位</th>
-                <th data-l10n="colPay">課金</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
+
+        <!-- C 組列表 -->
+        <div class="table-wrapper full-width" id="detailGroupCContainer" style="display:none;">
+          <div class="card stat-table">
+            <h3 data-l10n="listCTitle">C 隊列表</h3>
+            <table id="tableC">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th data-l10n="colUid">UID</th>
+                  <th data-l10n="colName">暱稱</th>
+                  <th data-l10n="colPay">課金</th>
+                  <th data-l10n="colPosX">X座標</th>
+                  <th data-l10n="colPosY">Y座標</th>
+                  <th data-l10n="colTroopWeapon">兵種/武器</th>
+                  <th data-l10n="colLang">語言</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- 資料將由 JavaScript 填入 -->
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </section>
@@ -378,14 +398,21 @@
         <br>
           <!-- 驗證碼設定 -->
           <div class="admin-group">
-            <h4>驗證碼設定</h4>
-            <div class="inline-group">
-              <label>報名表驗證碼：
-                <input type="text" id="verifyCodeA" value="AAA">
+            <h4 data-l10n="adminPasswordSettingsTitle" class="text-center">驗證碼與團隊設定</h4>
+            <div class="text-center" style="margin-bottom: 0.5rem;">
+              <span data-l10n="msgCurrentManagedTeamLabel">目前管理團隊：</span><strong id="currentManagedTeam">未指定</strong>
+            </div>
+            <div class="inline-group" style="justify-content: center; flex-wrap: wrap;">
+              <label style="min-width: 200px;">報名表驗證碼：
+                <input type="text" id="verifyCodeA" value="" style="width:100%;">
               </label>
-              <label>專武統計驗證碼：
-                <input type="text" id="verifyCodeB" value="BBB">
+            </div>
+            <div class="inline-group" style="justify-content: center; margin-top: 0.5rem;">
+              <label style="min-width: 280px;">管理員密碼設定：
+                <input type="password" id="adminPasswordInput" placeholder="輸入新密碼 (留空則不變)" style="width:100%;">
               </label>
+            </div>
+             <div style="margin-top: 1rem; padding: 0 10%;">
             </div>
           </div>
 
@@ -442,34 +469,24 @@
           </div>
       </div>
       
-      <!-- 以下是從詳細資料頁複製並修改ID的內容 -->
-      <!-- 統計卡 -->
-
-      <!-- A 組統計與列表 -->
-      <div class="stats-wrapper full-width">
-        <div class="card stat-table">
-          <h3 data-l10n="statATitle">A 統計</h3>
-          <table id="adminStatA">
-            <thead>
-              <tr>
-                <th data-l10n="colWeapon">武器</th>
-                <th data-l10n="colCount">次數</th>
-                <th data-l10n="colSuspicious">可疑</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
+      <!-- NEW ADMIN LISTS START -->
+      <!-- A 組列表 (Admin - New) -->
+      <div class="stats-wrapper full-width" id="adminDetailGroupAContainer">
         <div class="card stat-table">
           <h3 data-l10n="listATitle">A 隊列表</h3>
-          <table id="admin_tableA">
+          <table id="admin_detail_tableA">
             <thead>
               <tr>
+                <th></th>
                 <th>#</th>
                 <th data-l10n="colUid">UID</th>
                 <th data-l10n="colName">暱稱</th>
-                <th data-l10n="colRank">段位</th>
                 <th data-l10n="colPay">課金</th>
+                <th data-l10n="colPosX">X座標</th> 
+                <th data-l10n="colPosY">Y座標</th>
+                <th data-l10n="colTroopWeapon">兵種/武器</th>
+                <th data-l10n="colLang">語言</th>
+                <th data-l10n="colActions">操作</th>
               </tr>
             </thead>
             <tbody></tbody>
@@ -477,31 +494,23 @@
         </div>
       </div>
 
-      <!-- B 組統計與列表 -->
-      <div class="table-wrapper full-width">
-        <div class="card stat-table">
-          <h3 data-l10n="statBTitle">B 統計</h3>
-          <table id="adminStatB">
-            <thead>
-              <tr>
-                <th data-l10n="colWeapon">武器</th>
-                <th data-l10n="colCount">次數</th>
-                <th data-l10n="colSuspicious">可疑</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
+      <!-- B 組列表 (Admin - New) -->
+      <div class="table-wrapper full-width" id="adminDetailGroupBContainer" style="display:none;">
         <div class="card stat-table">
           <h3 data-l10n="listBTitle">B 隊列表</h3>
-          <table id="admin_tableB">
+          <table id="admin_detail_tableB">
             <thead>
               <tr>
+                <th></th>
                 <th>#</th>
                 <th data-l10n="colUid">UID</th>
                 <th data-l10n="colName">暱稱</th>
-                <th data-l10n="colRank">段位</th>
                 <th data-l10n="colPay">課金</th>
+                <th data-l10n="colPosX">X座標</th>
+                <th data-l10n="colPosY">Y座標</th>
+                <th data-l10n="colTroopWeapon">兵種/武器</th>
+                <th data-l10n="colLang">語言</th>
+                <th data-l10n="colActions">操作</th>
               </tr>
             </thead>
             <tbody></tbody>
@@ -509,44 +518,40 @@
         </div>
       </div>
 
-      <!-- C 組統計與列表 (Admin) -->
-      <div class="table-wrapper full-width" id="adminGroupCContainer" style="display:none;">
-        <div class="card stat-table">
-          <h3 data-l10n="statCTitle">C 統計</h3>
-          <table id="adminStatC">
-            <thead>
-              <tr>
-                <th data-l10n="colWeapon">武器</th>
-                <th data-l10n="colCount">次數</th>
-                <th data-l10n="colSuspicious">可疑</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
+      <!-- C 組列表 (Admin - New) -->
+      <div class="table-wrapper full-width" id="adminDetailGroupCContainer" style="display:none;">
         <div class="card stat-table">
           <h3 data-l10n="listCTitle">C 隊列表</h3>
-          <table id="admin_tableC">
+          <table id="admin_detail_tableC">
             <thead>
               <tr>
+                <th></th>
                 <th>#</th>
                 <th data-l10n="colUid">UID</th>
                 <th data-l10n="colName">暱稱</th>
-                <th data-l10n="colRank">段位</th>
                 <th data-l10n="colPay">課金</th>
+                <th data-l10n="colPosX">X座標</th>
+                <th data-l10n="colPosY">Y座標</th>
+                <th data-l10n="colTroopWeapon">兵種/武器</th>
+                <th data-l10n="colLang">語言</th>
+                <th data-l10n="colActions">操作</th>
               </tr>
             </thead>
             <tbody></tbody>
           </table>
         </div>
       </div>
+      <!-- NEW ADMIN LISTS END -->
 
       <!-- 新增：團隊自動分配區塊，現在位於 admin section 內部 -->
       <div class="card team-assignment-card" style="margin-top: 1rem;">
         <h4 class="text-center" data-l10n="teamAssignmentTitle" style="margin-bottom: 1rem;">團隊自動分配</h4>
         <div class="button-group" style="margin-bottom: 1rem; display: flex; justify-content: center; gap: 0.5rem;">
           <button type="button" class="primary" id="autoAssignTeams" data-l10n="btnAutoAssign">自動分組</button>
+          <button type="button" id="reorderSignupsBtn" class="secondary" data-l10n="btnReorder">重新編號</button>
+          <button type="button" id="fullReassignBtn" class="secondary">完全重新分隊</button>
           <button type="button" id="copyTeamResult" data-l10n="btnCopyResult">複製結果</button>
+          <button type="button" id="deleteAllDataBtn" class="danger">刪除全部資料</button>
         </div>
         <textarea id="teamAssignText" rows="8" readonly style="width: 100%; background-color: var(--bg-2); color: var(--fg-0); border: 1px solid #444; padding: 0.5rem; resize: vertical;"></textarea>
       </div>
@@ -581,6 +586,8 @@
       console.log('eventCode已更新為：', eventCode);
     });
   </script>
+  <!-- 引入SortablJS (CDN) 用於拖拉排序 -->
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>
