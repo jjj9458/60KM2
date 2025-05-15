@@ -1,6 +1,7 @@
 ## 專案重點要求
 
 1.  佈署於 GitHub Pages (`github.io`) 上，以便於使用者訪問和使用。
+2.  README.md 僅供參考，還未更新
 
 # 九萬啟插爆聯盟系統 README
 
