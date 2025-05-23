@@ -125,7 +125,7 @@ const I18N={
     // 新增地圖相關中文
     navMap: "地圖檢視",
     mapTitle: "地圖檢視",
-    filterDirection: "方位篩選：",
+    filterDirection: "方位：",
     dirAll: "全部",
     dirBL: "左下",
     dirTL: "左上",
@@ -957,6 +957,14 @@ document.querySelectorAll('.nav-btn').forEach(btn => {
     if (targetViewId === 'admin' && isAdmin) {
         updateAdminSection();
     }
+
+    // 在nav切換中，如果切換到地圖頁面，自動載入點位
+    if (targetViewId === 'map') {
+      // 確保軸與比例已設定
+      const dir = document.querySelector('#directionFilter .toggle-btn.active')?.dataset.value || 'all';
+      drawMapAxes(dir);
+      renderMapPoints();
+    }
   });
 });
 
@@ -1080,7 +1088,10 @@ async function saveSignup(obj, isNewSignupForCounter) {
     if (obj.troopType !== undefined) dataToSave.troopsNormal = obj.troopType;
     if (obj.specialType !== undefined) dataToSave.troopsSpecial = obj.specialType;
     if (obj.weaponName !== undefined) dataToSave.troopsMerge = obj.weaponName;
-
+    // 功能1：儲存指揮/文書勾選狀態
+    if (obj.isCommander !== undefined) dataToSave.isCommander = obj.isCommander;
+    if (obj.isScribe !== undefined) dataToSave.isScribe = obj.isScribe;
+    
     if (isNewSignupForCounter) { // Only add timestamp/order/player_game_uid for truly new signups
         dataToSave.player_game_uid = obj.uid; // obj.uid IS the player's game UID from the form for new signups
         dataToSave.ts = firebase.database.ServerValue.TIMESTAMP;
@@ -1241,14 +1252,32 @@ function updateTable(data, tableId, lang, isDetailPage = false, showActionsColum
       }
         const posXDisplay = r.posX !== undefined ? r.posX : 'N/A';
         const posYDisplay = r.posY !== undefined ? r.posY : 'N/A';
-        let troopWeaponDisplay = 'N/A';
+        // 功能4：組合 顯示 主武器/兵種，以及勾選角色
+        let baseName = '';
+        const subparts = [];
         if (r.troopsMerge) {
-          troopWeaponDisplay = I18N[lang]?.weaponGridDisplay?.weapons?.[r.troopsMerge] || r.troopsMerge;
+            // 主要使用融合武器名稱
+            baseName = I18N[lang]?.weaponGridDisplay?.weapons?.[r.troopsMerge] || r.troopsMerge;
+            if (r.troopsNormal) {
+                // 顯示下拉兵種
+                const normalName = I18N[lang]?.troopLabelMap?.[r.troopsNormal] ||
+                    I18N[lang]?.[`troop${r.troopsNormal.charAt(0).toUpperCase() + r.troopsNormal.slice(1)}`] ||
+                    r.troopsNormal;
+                subparts.push(normalName);
+            }
         } else if (r.troopsNormal) {
-          troopWeaponDisplay = I18N[lang]?.troopLabelMap?.[r.troopsNormal] || 
-                               I18N[lang]?.[`troop${r.troopsNormal.charAt(0).toUpperCase() + r.troopsNormal.slice(1)}`] || 
-                               r.troopsNormal;
+            // 僅選擇兵種
+            baseName = I18N[lang]?.troopLabelMap?.[r.troopsNormal] ||
+                I18N[lang]?.[`troop${r.troopsNormal.charAt(0).toUpperCase() + r.troopsNormal.slice(1)}`] ||
+                r.troopsNormal;
         }
+        // 加入勾選角色
+        if (r.isCommander) subparts.push(I18N[lang]?.adminCommander || '指揮');
+        if (r.isScribe) subparts.push(I18N[lang]?.adminScribe || '文書');
+        // 組合最終顯示
+        const troopWeaponDisplay = baseName
+            ? (subparts.length > 0 ? `${baseName}(${subparts.join('/')})` : baseName)
+            : 'N/A';
         const langDisplay = r.lang === 'zh' ? I18N[lang].langZh : (r.lang === 'en' ? I18N[lang].langEn : 'N/A');
         return `
           <tr data-uid="${firebaseKey}">
@@ -1788,6 +1817,9 @@ document.getElementById('submitWeapon').addEventListener('click', async ()=>{
   const previewTeamValue = document.getElementById('previewTeamSelect')?.value || '';
   const previewOrderInTeamValue = document.getElementById('previewOrderInTeamSelect')?.value || '';
 
+  // 功能1：讀取指揮/文書勾選狀態
+  const isCommanderChecked = document.getElementById('commanderCheckbox')?.checked;
+  const isScribeChecked = document.getElementById('scribeCheckbox')?.checked;
 
   let hasError = false;
   // 驗證左側專武表單
@@ -1849,6 +1881,9 @@ document.getElementById('submitWeapon').addEventListener('click', async ()=>{
     troopType: troopTypeValue,
     specialType: specialTypeValue,
     weaponName: selectedWeaponName,
+    // 功能1：攜帶指揮/文書標記到後端
+    isCommander: isCommanderChecked,
+    isScribe: isScribeChecked,
     
     name: previewPlayerNameValue,
     pay: previewPaySelectValue,
@@ -1900,6 +1935,12 @@ document.getElementById('submitWeapon').addEventListener('click', async ()=>{
     alert(successMessage);
 
     clearFormFields(form); 
+    // 功能5：清除指揮/文書勾選與武器按鈕數量顯示
+    const commCb = document.getElementById('commanderCheckbox'); if(commCb) commCb.checked = false;
+    const scribCb = document.getElementById('scribeCheckbox'); if(scribCb) scribCb.checked = false;
+    document.querySelectorAll('.weapon-count').forEach(el => el.textContent = '');
+    document.querySelectorAll('.weapon-button').forEach(btn => btn.style.color = '');
+
     // Clear preview form fields as well, including new team/order fields
     previewPlayerNameInputEl.value = '';
     previewPlayerNameInputEl.placeholder = I18N[lang].namePlaceholder || '輸入你的暱稱';
@@ -2479,7 +2520,7 @@ async function autoAssignTeams() {
   // 清空管理列表与结果展示
   document.querySelectorAll('#adminDetailGroupAContainer tbody,#adminDetailGroupBContainer tbody,#adminDetailGroupCContainer tbody')
     .forEach(tbody => tbody.innerHTML = '');
-  const teamAssignText = document.getElementById('teamAssignText'); if (teamAssignText) teamAssignText.textContent = '';
+  document.getElementById('teamAssignText').textContent = '';
 
   console.log('[autoAssignTeams] === Enhanced auto-assignment with expectSquad START ==='); // 修改：增加標記
 
@@ -2803,89 +2844,90 @@ updateAdminSection = (function(orig){
 let currentMapScale = 1.0; // 新增：追蹤目前地圖縮放比例
 const MIN_MAP_SCALE = 1.0;
 const MAX_MAP_SCALE = 3.0;
-const MAP_SCALE_STEP = 0.4;
+const MAP_SCALE_STEP = 0.1;
 
-// 新增：繪製地圖座標軸的函數
-function drawMapAxes(selectedDirection = 'all') {
-  const axisX = document.querySelector('.map-axis-x');
-  const axisY = document.querySelector('.map-axis-y');
-  const mapContainer = document.getElementById('coordinateMapContainer'); // 獲取地圖容器
-  if (!axisX || !axisY || !mapContainer) return;
+// 新增：平移偏移量 (像素)
+let panX = 0, panY = 0;
 
-  axisX.innerHTML = ''; // 清空舊刻度
-  axisY.innerHTML = ''; // 清空舊刻度
+// 更新地圖 transform，包含平移與縮放
+function updateMapTransform() {
+  console.log(`updateMapTransform called: scale=${currentMapScale.toFixed(2)}, panX=${panX.toFixed(1)}, panY=${panY.toFixed(1)}`);
+  const mapContainer = document.getElementById('coordinateMapContainer');
+  if (!mapContainer) return;
+  // 計算溢出：右/下/上與縮放反比，左側額外加 30
+  const W = mapContainer.clientWidth, H = mapContainer.clientHeight;
+  // 動態 clamp 範圍：從 scale=1 (±50) 到 scale=2 (範例數值)
+  const maxX = 195 * currentMapScale - 145;
+  const minX = -150 * currentMapScale + 100;
+  // Y 軸 clamp 固定
+  const maxY = 1 + currentMapScale * 100;
+  const minY = -1 - currentMapScale * 100;
+  panX = Math.min(maxX, Math.max(panX, minX));
+  panY = Math.min(maxY, Math.max(panY, minY));
+  // 先縮放再平移，避免平移被縮放
+  mapContainer.style.transform = `scale(${currentMapScale}) translate(${panX}px, ${panY}px)`;
+}
 
-  const ticks = [0, 100, 200, 300, 400, 500, 599];
-  const midPoint = 299.5; // 中間點，用於判斷象限
+// 補充：暫時定義 drawMapAxes 函式，以免缺失導致錯誤，僅呼叫 transform 更新
+function drawMapAxes(dir = 'all') {
+  updateMapTransform();
+}
 
-  // 判斷刻度是否在選定象限的函數
-  const isInQuadrant = (value, axisType) => {
-    // 當 selectedDirection 為 'all' 時，不高亮任何特定象限的刻度，讓用戶看到全部範圍
-    if (selectedDirection === 'all') return false; 
-    if (selectedDirection === 'bl') {
-      return axisType === 'x' ? value <= midPoint : value <= midPoint;
-    }
-    if (selectedDirection === 'tl') {
-      return axisType === 'x' ? value <= midPoint : value > midPoint;
-    }
-    if (selectedDirection === 'br') {
-      return axisType === 'x' ? value > midPoint : value <= midPoint;
-    }
-    if (selectedDirection === 'tr') {
-      return axisType === 'x' ? value > midPoint : value > midPoint;
-    }
-    return false;
-  };
-
-  ticks.forEach(tick => {
-    // X 軸
-    const labelX = document.createElement('span');
-    labelX.className = 'tick-label';
-    labelX.textContent = tick;
-    if (isInQuadrant(tick, 'x')) {
-      labelX.classList.add('active-quadrant');
-    }
-    axisX.appendChild(labelX);
-
-    // Y 軸
-    const labelY = document.createElement('span');
-    labelY.className = 'tick-label';
-    labelY.textContent = tick;
-    if (isInQuadrant(tick, 'y')) {
-      labelY.classList.add('active-quadrant');
-    }
-    axisY.appendChild(labelY);
-  });
-
-  // 更新地圖容器的視覺「縮放」
-  mapContainer.classList.remove('focused-quadrant'); // 移除舊的聚焦 class
-  mapContainer.style.transform = 'scale(1) translate(0, 0)'; // 恢復預設
-
-  if (selectedDirection !== 'all') {
-    mapContainer.classList.add('focused-quadrant');
-    let scale = currentMapScale; // 使用 currentMapScale
-    let translateX = '0%';
-    let translateY = '0%';
-
-    // 根據象限計算位移百分比，使對應象限大致居中放大
-    // 這些百分比需要基於容器尺寸和放大倍率進行微調才能完美
-    const offsetFactor = ((scale - 1) / 2) * 100 / scale; // 簡化計算偏移的因子
-
-    if (selectedDirection === 'tl') {
-      translateX = `${offsetFactor}%`;
-      translateY = `${offsetFactor}%`;
-    } else if (selectedDirection === 'tr') {
-      translateX = `-${offsetFactor}%`;
-      translateY = `${offsetFactor}%`;
-    } else if (selectedDirection === 'bl') {
-      translateX = `${offsetFactor}%`;
-      translateY = `-${offsetFactor}%`;
-    } else if (selectedDirection === 'br') {
-      translateX = `-${offsetFactor}%`;
-      translateY = `-${offsetFactor}%`;
-    }
-    mapContainer.style.transform = `scale(${scale}) translate(${translateX}, ${translateY})`;
+// 新增：根據象限或全部重設縮放和平移
+function zoomToQuadrant(dir) {
+  const mapContainer = document.getElementById('coordinateMapContainer');
+  if (!mapContainer) return;
+  // 1. 恢復全部視圖
+  currentMapScale = 1;
+  panX = 0; panY = 0;
+  updateMapTransform();
+  if (dir === 'all') return;
+  
+  // 2. 軸範圍參數
+  const axisMin = -50, axisMax = 650, axisRange = axisMax - axisMin;
+  const halfRange = axisRange / 2;
+  const quarterRange = halfRange / 2;
+  
+  // 3. 計算象限中心軸座標 (使用 quarterRange 定位)
+  let centerX, centerY;
+  if (dir === 'tl') {
+    centerX = quarterRange;
+    centerY = halfRange + quarterRange;
+  } else if (dir === 'tr') {
+    centerX = halfRange + quarterRange;
+    centerY = halfRange + quarterRange;
+  } else if (dir === 'bl') {
+    centerX = quarterRange;
+    centerY = quarterRange;
+  } else if (dir === 'br') {
+    centerX = halfRange + quarterRange;
+    centerY = quarterRange;
   }
+  
+  // 4. 執行放大
+  currentMapScale = 2;
+  const cw = mapContainer.clientWidth, ch = mapContainer.clientHeight;
+  
+  // 5. 轉換為像素座標
+  const px = (centerX - axisMin) / axisRange * cw;
+  const py = (axisMax - centerY) / axisRange * ch;
+  
+  // 6. 平移至視窗中心
+  panX = cw / 2 - px;
+  panY = ch / 2 - py;
+  
+  // 7. 邊界鎖定，使用動態 overflow
+  const overflowRB = 50;                         // 右/底最大 overflow
+  const overflowLT = overflowRB * currentMapScale; // 左/上動態 overflow
+  const minPanX = cw - cw * currentMapScale - overflowLT;
+  const maxPanX = overflowRB;
+  panX = Math.min(maxPanX, Math.max(panX, minPanX));
+  const minPanY = ch - ch * currentMapScale - overflowLT;
+  const maxPanY = overflowRB;
+  panY = Math.min(maxPanY, Math.max(panY, minPanY));
+  
+  // 8. 更新變形
+  updateMapTransform();
 }
 
 // 初始化地圖篩選器邏輯
@@ -2893,70 +2935,108 @@ function initMapFilters() {
   // 方位篩選器 (單選)
   const directionFilter = document.getElementById('directionFilter');
   if (directionFilter) {
-    const buttons = directionFilter.querySelectorAll('.toggle-btn');
-    buttons.forEach(button => {
-      button.addEventListener('click', () => {
-        buttons.forEach(btn => btn.classList.remove('active'));
-        button.classList.add('active');
-        drawMapAxes(button.dataset.value); // 更新座標軸
-        // TODO: 觸發地圖資料點更新
+    const dirBtns = directionFilter.querySelectorAll('.toggle-btn');
+    dirBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const dir = btn.dataset.value;
+        switch (dir) {
+          case 'all':
+            currentMapScale = 1.0; panX = 0;      panY = 0;      break;
+          case 'tl':
+            currentMapScale = 1.7; panX = 180;  panY = 180.0;  break;
+          case 'tr':
+            currentMapScale = 1.7; panX = -150.0; panY = 180.0;  break;
+          case 'bl':
+            currentMapScale = 1.7; panX = 180;  panY = -200.0; break;
+          case 'br':
+            currentMapScale = 1.7; panX = -150.0; panY = -200.0; break;
+        }
+        drawMapAxes(dir);
+        renderMapPoints();
       });
     });
-    // 預設選中 'all'
-    const defaultDirButton = directionFilter.querySelector('.toggle-btn[data-value="all"]');
-    if (defaultDirButton) {
-      defaultDirButton.classList.add('active');
-      drawMapAxes(defaultDirButton.dataset.value); // 初始繪製座標軸
-    }
   }
-
-  // 分組篩選器 (複選)
+  // 分組篩選器 (多選)
   const groupFilter = document.getElementById('groupFilter');
   if (groupFilter) {
-    const buttons = groupFilter.querySelectorAll('.toggle-btn');
-    buttons.forEach(button => {
-      button.addEventListener('click', () => {
-        button.classList.toggle('active');
-        // TODO: 觸發地圖更新
+    const grpBtns = groupFilter.querySelectorAll('.toggle-btn');
+    grpBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        btn.classList.toggle('active');
+        renderMapPoints();
       });
     });
-    // 預設選中 'A'
-    groupFilter.querySelector('.toggle-btn[data-value="A"]')?.classList.add('active');
+    grpBtns.forEach(btn => btn.classList.add('active'));
   }
-
-  // 顯示資訊篩選器 (複選)
+  // 顯示資訊篩選器 (多選)
   const infoFilter = document.getElementById('infoFilter');
   if (infoFilter) {
-    const buttons = infoFilter.querySelectorAll('.toggle-btn');
-    buttons.forEach(button => {
-      button.addEventListener('click', () => {
-        button.classList.toggle('active');
-        // TODO: 觸發地圖更新
+    const infoBtns = infoFilter.querySelectorAll('.toggle-btn');
+    infoBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        btn.classList.toggle('active');
+        renderMapPoints();
       });
     });
-    // 預設選中 'coords' 和 'name'
-    infoFilter.querySelector('.toggle-btn[data-value="coords"]')?.classList.add('active');
-    infoFilter.querySelector('.toggle-btn[data-value="name"]')?.classList.add('active');
+    infoBtns.forEach(btn => btn.classList.add('active'));
   }
+}
 
-  const zoomInButton = document.getElementById('zoomInBtn');
-  const zoomOutButton = document.getElementById('zoomOutBtn');
-  
-  if (zoomInButton) {
-    zoomInButton.addEventListener('click', () => {
-      currentMapScale = Math.min(MAX_MAP_SCALE, currentMapScale + MAP_SCALE_STEP);
-      const activeDirectionButton = document.querySelector('#directionFilter .toggle-btn.active');
-      drawMapAxes(activeDirectionButton ? activeDirectionButton.dataset.value : 'all');
-    });
-  }
-
-  if (zoomOutButton) {
-    zoomOutButton.addEventListener('click', () => {
-      currentMapScale = Math.max(MIN_MAP_SCALE, currentMapScale - MAP_SCALE_STEP);
-      const activeDirectionButton = document.querySelector('#directionFilter .toggle-btn.active');
-      drawMapAxes(activeDirectionButton ? activeDirectionButton.dataset.value : 'all');
-    });
-  }
+// 新增：初始化地圖拖拽平移
+function initMapPan() {
+  const map = document.getElementById('coordinateMapContainer');
+  if (!map) return;
+  map.style.cursor = 'grab';
+  let isDragging = false, startX = 0, startY = 0;
+  map.addEventListener('mousedown', e => {
+    isDragging = true;
+    startX = e.clientX;
+    startY = e.clientY;
+    map.style.cursor = 'grabbing';
+  });
+  window.addEventListener('mousemove', e => {
+    if (!isDragging) return;
+    const dx = e.clientX - startX;
+    const dy = e.clientY - startY;
+    startX = e.clientX;
+    startY = e.clientY;
+    panX += dx;
+    panY += dy;
+    updateMapTransform();
+    drawMapAxes();
+  });
+  window.addEventListener('mouseup', () => {
+    if (isDragging) {
+      isDragging = false;
+      map.style.cursor = 'grab';
+    }
+  });
+  // 支援觸控拖拽
+  map.addEventListener('touchstart', e => {
+    if (e.touches.length === 1) {
+      isDragging = true;
+      startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+    }
+  }, { passive: false });
+  window.addEventListener('touchmove', e => {
+    if (!isDragging || e.touches.length !== 1) return;
+    const dx = e.touches[0].clientX - startX;
+    const dy = e.touches[0].clientY - startY;
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+    panX += dx;
+    panY += dy;
+    updateMapTransform();
+    drawMapAxes();
+    e.preventDefault();
+  }, { passive: false });
+  window.addEventListener('touchend', () => {
+    if (isDragging) {
+      isDragging = false;
+      map.style.cursor = 'grab';
+    }
+  });
 }
 
 /* ===== 初始化 ===== */
@@ -3027,6 +3107,22 @@ window.addEventListener('DOMContentLoaded', async () => { // Make it async if an
   
   // 10. 初始化地圖篩選器
   initMapFilters();
+  // 11. 初始化地圖拖拽平移
+  initMapPan();
+  // 12. 放大/縮小按鈕
+  const zoomInBtn = document.getElementById('zoomInBtn');
+  const zoomOutBtn = document.getElementById('zoomOutBtn');
+  if (zoomInBtn) zoomInBtn.addEventListener('click', () => {
+    currentMapScale = Math.min(MAX_MAP_SCALE, currentMapScale + MAP_SCALE_STEP);
+    updateMapTransform(); drawMapAxes(); renderMapPoints();
+  });
+  if (zoomOutBtn) zoomOutBtn.addEventListener('click', () => {
+    currentMapScale = Math.max(MIN_MAP_SCALE, currentMapScale - MAP_SCALE_STEP);
+    updateMapTransform(); drawMapAxes(); renderMapPoints();
+  });
+  // 隱藏底部資訊面板，改用標籤顯示
+  const infoPanel = document.getElementById('mapDataDisplay');
+  if (infoPanel) infoPanel.style.display = 'none';
 
   // 11. 專武登記表單 UID 輸入完成後（blur），載入可編輯的報名資料到右側方塊
   const weaponUIDInput = document.getElementById('weaponUID');
@@ -3061,6 +3157,7 @@ window.addEventListener('DOMContentLoaded', async () => { // Make it async if an
         document.getElementById('previewPaySelect').value = '';
         document.getElementById('previewIntroSelect').value = '';
         // previewTeamSelect already reset
+        updateWeaponGridCounts(null);
         return;
       }
       const signups = await getSignups();
@@ -3072,6 +3169,7 @@ window.addEventListener('DOMContentLoaded', async () => { // Make it async if an
         document.getElementById('previewPaySelect').value = '';
         document.getElementById('previewIntroSelect').value = '';
         // previewTeamSelect already reset
+        updateWeaponGridCounts(null);
         return;
       }
       document.getElementById('previewPlayerName').value = rec.nickname || '';
@@ -3111,7 +3209,17 @@ window.addEventListener('DOMContentLoaded', async () => { // Make it async if an
       }
       // END OF MODIFIED BLOCK
       
-      weaponRightContainer.dataset.firebaseKey = rec.uid; 
+      // 設置指揮/文書勾選狀態
+      const commanderCb = document.getElementById('commanderCheckbox');
+      const scribeCb = document.getElementById('scribeCheckbox');
+      if (commanderCb) commanderCb.checked = !!rec.isCommander;
+      if (scribeCb) scribeCb.checked = !!rec.isScribe;
+      
+      // 更新武器按鈕後方的數量顯示
+      const teamChar = rec.teamAssignment ? rec.teamAssignment.charAt(0) : null;
+      updateWeaponGridCounts(teamChar);
+      
+      weaponRightContainer.dataset.firebaseKey = rec.uid;
     });
     document.getElementById('previewFormLangSwitch').addEventListener('change', e => {
       const v = e.target.value;
@@ -3330,7 +3438,9 @@ function generateWeaponGrid() {
         button.className = 'weapon-button';
         button.dataset.weapon = weaponNameKey; // data-weapon 儲存中文武器名，供後台使用
         // 從 I18N 獲取武器按鈕文字的翻譯
-        button.textContent = I18N[lang]?.weaponGridDisplay?.weapons?.[weaponNameKey] || weaponNameKey;
+        const translatedName = I18N[lang]?.weaponGridDisplay?.weapons?.[weaponNameKey] || weaponNameKey;
+        // 顯示武器名稱並預留數量顯示區域
+        button.innerHTML = translatedName + ' <span class="weapon-count"></span>';
 
         button.addEventListener('click', () => {
           document.querySelectorAll('.weapon-button.active').forEach(btn => {
@@ -3664,21 +3774,14 @@ async function renderMapPoints() {
   const container = document.getElementById('coordinateMapContainer');
   if (!container) return;
   container.innerHTML = '';
-  resetMapDataDisplay();
+  // resetMapDataDisplay(); // 底部面板已隱藏，僅使用標籤顯示資訊
   const selectedDirection = document.querySelector('#directionFilter .toggle-btn.active')?.dataset.value || 'all';
   const selectedGroups = Array.from(document.querySelectorAll('#groupFilter .toggle-btn.active')).map(btn => btn.dataset.value);
   const points = data.filter(p => p.posX !== undefined && p.posY !== undefined);
+  // 不依方位篩選，僅根據分組篩選
   const filtered = points.filter(p => {
     const grp = p.teamAssignment ? p.teamAssignment.charAt(0) : null;
-    if (!selectedGroups.includes(grp)) return false;
-    if (selectedDirection !== 'all') {
-      const mid = 299.5, x = p.posX, y = p.posY;
-      if (selectedDirection === 'bl' && !(x <= mid && y <= mid)) return false;
-      if (selectedDirection === 'tl' && !(x <= mid && y > mid)) return false;
-      if (selectedDirection === 'br' && !(x > mid && y <= mid)) return false;
-      if (selectedDirection === 'tr' && !(x > mid && y > mid)) return false;
-    }
-    return true;
+    return selectedGroups.includes(grp);
   });
   if (filtered.length === 0) {
     container.innerHTML = `<p style="text-align:center; padding: 50px; color: #666;" data-l10n="mapPlaceholder">${I18N[lang].mapPlaceholder}</p>`;
@@ -3693,17 +3796,51 @@ async function renderMapPoints() {
       position: 'absolute', left: `${left}%`, top: `${top}%`,
       width: '12px', height: '12px', backgroundColor: 'rgba(255,0,0,0.7)',
       border: '2px solid #fff', borderRadius: '50%', transform: 'translate(-50%, -50%)',
-      cursor: 'pointer'
+      cursor: 'pointer', zIndex: 2
     });
     marker.dataset.x = p.posX; marker.dataset.y = p.posY;
     marker.dataset.nickname = p.nickname || '';
     marker.dataset.weapon = p.troopsMerge || p.troopsNormal || '';
     marker.dataset.identity = p.roleGroup || '';
     marker.dataset.introName = p.introName || '';
-    marker.addEventListener('mouseenter', () => showMapData(marker));
-    marker.addEventListener('click', () => showMapData(marker));
-    marker.addEventListener('mouseleave', () => resetMapDataDisplay());
+    // marker.addEventListener('mouseenter', () => showMapData(marker));
+    // marker.addEventListener('click', () => showMapData(marker));
+    // marker.addEventListener('mouseleave', () => resetMapDataDisplay());
     container.appendChild(marker);
+
+    // 顯示玩家名稱標籤
+    const label = document.createElement('span');
+    label.className = 'map-label';
+    label.textContent = p.nickname || '';
+    label.style.display = 'block';
+    Object.assign(label.style, {
+      position: 'absolute', left: `${left}%`, top: `${top}%`,
+      transform: 'translate(8px, -8px)',
+      zIndex: 1,
+      pointerEvents: 'none',
+      backgroundColor: 'transparent',
+      color: '#fff',
+      whiteSpace: 'nowrap',
+      fontSize: '0.75rem'
+    });
+    container.appendChild(label);
+    // 綁定 hover 顯示詳細資訊
+    marker._label = label;
+    marker.addEventListener('mouseenter', () => {
+      const infos = [];
+      document.querySelectorAll('#infoFilter .toggle-btn.active').forEach(btn => {
+        const key = btn.dataset.value;
+        if (key === 'coords') infos.push(`座標: ${marker.dataset.x},${marker.dataset.y}`);
+        else if (key === 'weapon') infos.push(`兵種: ${(I18N[lang]?.weaponGridDisplay?.weapons?.[marker.dataset.weapon]||marker.dataset.weapon)}`);
+        else if (key === 'identity') infos.push(`身分: ${(I18N[lang]?.introDisplay?.[marker.dataset.identity]||marker.dataset.identity)}${marker.dataset.introName?`(${marker.dataset.introName})`:''}`);
+      });
+      marker._label.innerHTML = `<strong>${marker.dataset.nickname}</strong><br>` + infos.join('<br>');
+    });
+    marker.addEventListener('mouseleave', () => {
+      marker._label.textContent = marker.dataset.nickname;
+    });
+    // 新增：點擊顯示詳細資料，持續至下一次點擊
+    marker.addEventListener('click', () => showMapData(marker));
   });
 }
 
@@ -3712,6 +3849,7 @@ function showMapData(marker) {
   const disp = document.getElementById('mapDataDisplay');
   if (!disp) return;
   disp.innerHTML = '';
+  disp.style.display = 'block';  // 顯示提示框
   Array.from(document.querySelectorAll('#infoFilter .toggle-btn.active')).forEach(btn => {
     let val = '';
     const key = btn.dataset.value;
@@ -3731,6 +3869,135 @@ function resetMapDataDisplay() {
   if (!disp) return;
   disp.innerHTML = `<p data-l10n="hoverHintMap">${I18N[lang].hoverHintMap}</p>`;
   applyLang();
+}
+
+// 新增 功能2：依照所屬隊伍更新每個武器按鈕後方的數量顯示
+async function updateWeaponGridCounts(teamChar) {
+    const buttons = document.querySelectorAll('.weapon-button');
+    // 如果沒有指定隊伍，清除顯示
+    if (!teamChar) {
+        // 無隊伍時，清除武器按鈕數量與顏色
+        buttons.forEach(btn => {
+            const span = btn.querySelector('.weapon-count');
+            if (span) span.textContent = '';
+            btn.style.color = '';
+        });
+        // 清除指揮/文書數量與顏色
+        const commanderCountElem = document.getElementById('commanderCount');
+        const scribeCountElem = document.getElementById('scribeCount');
+        if (commanderCountElem) commanderCountElem.textContent = '';
+        if (scribeCountElem) scribeCountElem.textContent = '';
+        const commanderLabel = commanderCountElem ? commanderCountElem.previousElementSibling : null;
+        const scribeLabel = scribeCountElem ? scribeCountElem.previousElementSibling : null;
+        if (commanderLabel) commanderLabel.style.color = '';
+        if (scribeLabel) scribeLabel.style.color = '';
+        return;
+    }
+    // 取得該隊所有報名資料
+    const all = await getSignups();
+    // 取得管理員設定的配額
+    let quotas = {};
+    try {
+        const settingsSnap = await db.ref(`${DB_ROOT}/${window.currentTeamId}/systemSettings/quotas`).once('value');
+        quotas = settingsSnap.val() || {};
+    } catch(e) { console.error('獲取配額錯誤:', e); }
+    buttons.forEach(btn => {
+        const weaponKey = btn.dataset.weapon; // 中文武器名
+        // 計算已選取數量
+        const count = all.filter(p => p.teamAssignment && p.teamAssignment.startsWith(teamChar) && p.troopsMerge === weaponKey).length;
+        // 獲取按鈕所屬分類 id
+        const categoryDiv = btn.closest('.weapon-category');
+        const match = categoryDiv?.className.match(/type-([a-z]+)/);
+        const cat = match ? match[1] : null;
+        // 特殊類別武器使用單獨配額
+        let denom = 8;
+        if (cat && quotas[cat] !== undefined) {
+            denom = quotas[cat];
+        }
+        if (cat === 'special') {
+            // 特殊類別內部，對「沒想法」使用無限配額，其餘對應各自配額
+            if (weaponKey === '沒想法') {
+                denom = '∞';
+            } else {
+                const specialQuotaMap = {
+                    '劍盾': 'swordshield',
+                    '地鼠號': 'mole',
+                    '大餅盟主': 'cookie'
+                };
+                const quotaKey = specialQuotaMap[weaponKey];
+                if (quotaKey && quotas[quotaKey] !== undefined) {
+                    denom = quotas[quotaKey];
+                }
+            }
+        }
+        const span = btn.querySelector('.weapon-count');
+        if (span) span.textContent = ` (${count}/${denom})`;
+        // 功能3：當已選數量超過配額時，文字變灰
+        if (count > denom) {
+            btn.style.color = '#ccc';
+        } else {
+            btn.style.color = '';
+        }
+    });
+    // 功能2：更新 指揮/文書 數量顯示與樣式
+    const commanderCountElem = document.getElementById('commanderCount');
+    const scribeCountElem = document.getElementById('scribeCount');
+    const commanderCount = teamChar ? all.filter(p => p.teamAssignment.startsWith(teamChar) && p.isCommander).length : 0;
+    const scribeCount = teamChar ? all.filter(p => p.teamAssignment.startsWith(teamChar) && p.isScribe).length : 0;
+    const denomCommander = quotas.commander !== undefined ? quotas.commander : 8;
+    const denomScribe = quotas.scribe !== undefined ? quotas.scribe : 8;
+    if (commanderCountElem) commanderCountElem.textContent = ` (${commanderCount}/${denomCommander})`;
+    if (scribeCountElem) scribeCountElem.textContent = ` (${scribeCount}/${denomScribe})`;
+    // 當數量 >1，標題文字變灰
+    const commanderLabel = commanderCountElem ? commanderCountElem.previousElementSibling : null;
+    const scribeLabel = scribeCountElem ? scribeCountElem.previousElementSibling : null;
+    if (commanderLabel) commanderLabel.style.color = commanderCount > denomCommander ? '#ccc' : '';
+    if (scribeLabel) scribeLabel.style.color = scribeCount > denomScribe ? '#ccc' : '';
+ }
+
+// 計算刻度分隔的輔助函數
+function niceStep(rawStep) {
+  const exponent = Math.floor(Math.log10(rawStep));
+  const base = Math.pow(10, exponent);
+  const fraction = rawStep / base;
+  let niceFraction;
+  if (fraction <= 1) niceFraction = 1;
+  else if (fraction <= 2) niceFraction = 2;
+  else if (fraction <= 5) niceFraction = 5;
+  else niceFraction = 10;
+  return niceFraction * base;
+}
+// 完整座標軸繪製，依當前縮放與平移動態產生刻度
+function drawMapAxes() {
+  const axisX = document.querySelector('.map-axis-x');
+  const axisY = document.querySelector('.map-axis-y');
+  const mapContainer = document.getElementById('coordinateMapContainer');
+  if (!axisX || !axisY || !mapContainer) return;
+  // 更新地圖位置與縮放
+  updateMapTransform();
+  // 清空舊刻度
+  axisX.innerHTML = '';
+  axisY.innerHTML = '';
+  // 靜態刻度：0,100,...,600
+  for (let v = 0; v <= 600; v += 100) {
+    const spanX = document.createElement('span');
+    spanX.className = 'tick-label';
+    spanX.textContent = v;
+    axisX.appendChild(spanX);
+    const spanY = document.createElement('span');
+    spanY.className = 'tick-label';
+    spanY.textContent = v;
+    axisY.appendChild(spanY);
+  }
+  // 僅同步各自方向的縮放與平移，保持另一方向位置固定
+  // 根據縮放比例調整座標軸偏移
+  // 動態計算額外偏移：使用線性公式 extraOffset = -baseShift * (scale - 1)
+  // baseShift 可依實際需求調整 (值越大，縮放後位移補償越大)
+  const baseShift = 200;
+  const extraOffsetX = -(baseShift-20) * (currentMapScale - 1);
+  const extraOffsetY = -(baseShift-50) * (currentMapScale - 1);
+  axisX.style.transform = `scale(${currentMapScale}) translate(${panX + extraOffsetX}px, 0)`;
+  axisY.style.transform = `scale(${currentMapScale}) translate(0, ${panY + extraOffsetY}px)`;
 }
 
 

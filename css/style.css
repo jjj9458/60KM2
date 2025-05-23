@@ -870,6 +870,10 @@ th.sort-desc::after{
   width: 100%;
   max-width: 600px; /* 調整地圖最大寬度 */
   margin: 0 auto 1rem auto; /* 置中並設定底部間距 */
+  /* 禁止選取及複製文字 */
+  user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
 }
 
 .coordinate-map {
@@ -917,10 +921,13 @@ th.sort-desc::after{
 }
 
 .map-data-display {
-  background-color: var(--bg-2);
+  background-color: var(--bg-1);      /* 使用較淺背景色與地圖區分 */
+  border: 1px solid var(--accent);    /* 加入突出邊框 */
   border-radius: 6px;
   font-size: 0.9rem;
-  /* min-height and padding are set inline in HTML, can be moved here if preferred */
+  padding: 0.75rem;                    /* 移入內距 */
+  min-height: 60px;                    /* 固定最小高度 */
+  margin-top: 1rem;                    /* 確保與地圖有間距 */
 }
 
 /* 確保地圖頁籤篩選器組的標題靠左 */
@@ -968,38 +975,43 @@ th.sort-desc::after{
   display: flex;
   flex-direction: column; /* 地圖在上，X軸在下 */
   flex-grow: 1; /* 佔據剩餘寬度 */
-  overflow: hidden; /* 新增：裁剪溢出的地圖內容 */
+  overflow: visible; /* 修改：移除裁剪，由 .map-frame 控制裁剪 */
 }
 
 .map-axis-x {
+  position: relative;
+  z-index: 5;
   flex-direction: row;
   height: 30px; /* X軸高度 */
   border-top: 1px solid #444;
 }
 
+/*
 .map-axis .tick-label {
-  /* 標籤基本樣式 */
-  /* padding: 2px; */
+  // 標籤基本樣式 
+  // padding: 2px; 
 }
+*/
 
 .map-axis .tick-label.active-quadrant {
-  color: var(--accent); /* 高亮活動象限的刻度 */
+  color: var(--accent);  /* 高亮活動象限的刻度 */
   font-weight: bold;
 }
 
 /* 調整地圖容器，因為外層多了 padding/border */
+/*
 .coordinate-map {
-  /* width: 100%; */ /* 由 flex-grow 控制 */
-  /* height: 100%; */ /* 由 aspect-ratio 控制，或者父層給定高度 */
-  /* aspect-ratio 已有設定，應可正常運作 */
+  // width: 100%; 由 flex-grow 控制 
+  // height: 100%; 由 aspect-ratio 控制，或者父層給定高度 
+  // aspect-ratio 已有設定，應可正常運作 
 }
-
+*/
 /* 新增：地圖聚焦/縮放相關樣式 */
+/* 
 .coordinate-map.focused-quadrant {
-  /* 示例：可以給一個明顯的邊框來表示聚焦 */
-  /* border: 3px solid var(--accent) !important; */
-  /* 實際的縮放和平移將由 JS 控制 transform 屬性 */
+  border:3px solid var(--accent);
 }
+*/
 
 /* 為不同象限預留的縮放樣式 (JS將直接設定transform) */
 /* .coordinate-map.zoom-tl { transform: scale(2) translate(25%, 25%); } */
@@ -1131,4 +1143,35 @@ th.sort-desc::after{
 #admin .admin-group select {
   flex: 1; /* 讓輸入框佔據剩餘空間 */
   min-width: 0; /* 允許輸入框縮小 */
+}
+
+/* --- 專武登記：指揮/文書勾選框 inline 顯示 --- */
+.weapon-checkboxes {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* 在地圖容器允許標籤溢出 */
+#coordinateMapContainer {
+  overflow: visible;
+}
+/* 調整軸線容器，以支援 transform 並顯示於地圖之上 */
+.map-axis-x, .map-axis-y {
+  transform-origin: top left;
+  overflow: visible;
+  z-index: 10;
+}
+
+/* 新增：地圖外框，包含軸線與地圖 */
+.map-frame {
+  position: relative;
+  overflow: hidden;
+}
+
+/* 新增：地圖視窗，裁切地圖內容 */
+.map-view-window {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
 }

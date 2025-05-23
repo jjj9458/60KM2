@@ -171,6 +171,16 @@
                   <option value="cookie" data-l10n="specialCookie">大餅</option>
                 </select>
               </label>
+              <div class="weapon-checkboxes" style="display:flex; justify-content:space-between; align-items:center; gap:0.5rem; width:100%;">
+                <label style="flex: 1; text-align: center;">
+                  <input type="checkbox" id="commanderCheckbox" />
+                  <span data-l10n="adminCommander">指揮</span><span class="role-count" id="commanderCount"></span>
+                </label>
+                <label style="flex: 1; text-align: center;">
+                  <input type="checkbox" id="scribeCheckbox" />
+                  <span data-l10n="adminScribe">文書</span><span class="role-count" id="scribeCount"></span>
+                </label>
+              </div>
             </div>
             <div class="weapon-right">
               <label data-l10n="nameLabel">遊戲暱稱：
@@ -364,16 +374,20 @@
 
         <!-- 地圖容器與控制 -->
         <div class="map-container-wrapper">
-          <div class="map-render-area"> <!-- 新增：地圖繪製區域，包含地圖本身和座標軸 -->
-            <div class="map-axis map-axis-y"> <!-- Y 軸 -->
-              <!-- Y 軸刻度將由 JS 生成 -->
-            </div>
-            <div class="map-main-panel"> <!-- 主面板，包含地圖和 X 軸 -->
-              <div id="coordinateMapContainer" class="coordinate-map">
-                <p style="text-align:center; padding: 50px; color: #666;" data-l10n="mapPlaceholder">地圖區域載入中或無資料...</p>
+          <div class="map-frame">
+            <div class="map-render-area"> <!-- 新增：地圖繪製區域，包含地圖本身和座標軸 -->
+              <div class="map-axis map-axis-y"> <!-- Y 軸 -->
+                <!-- Y 軸刻度將由 JS 生成 -->
               </div>
-              <div class="map-axis map-axis-x"> <!-- X 軸 -->
-                <!-- X 軸刻度將由 JS 生成 -->
+              <div class="map-main-panel"> <!-- 主面板，包含地圖和 X 軸 -->
+                <div class="map-view-window"> <!-- 新增：地圖視窗，裁切地圖內容 -->
+                  <div id="coordinateMapContainer" class="coordinate-map">
+                    <p style="text-align:center; padding: 50px; color: #666;" data-l10n="mapPlaceholder">地圖區域載入中或無資料...</p>
+                  </div>
+                </div>
+                <div class="map-axis map-axis-x"> <!-- X 軸，放在視窗外部 -->
+                  <!-- X 軸刻度將由 JS 生成 -->
+                </div>
               </div>
             </div>
           </div>
