@@ -100,14 +100,14 @@ const I18N={
     },
     rankDisplay: {
       none: "無段位",
-      iron: "黑鐵",
+      iron: "鋼鐵",
       bronze: "青銅",
       silver: "白銀",
       gold: "黃金",
-      platinum: "鉑金",
+      platinum: "白金",
       diamond: "鑽石",
-      master: "大師",
-      king: "王者"
+      master: "宗師",
+      king: "傳奇王者"
     },
     introDisplay: {
       newbie: "新人",
@@ -217,7 +217,8 @@ const I18N={
     verifyHintCannotReadAny: "無法從資料庫讀取任何團隊的驗證碼資訊。",
     // HTML and JS dynamic content additions
     siteHtmlTitle: "九萬畝插爆聯盟系統",
-    verifyHintUsageNote: "僅供插爆使用 \n 意見：https://forms.gle/4FpZcHrBjNBL4mQr9",
+    verifyHintUsageNote1: "僅供插爆使用 提供意見：",
+    verifyHintUsageNote2: "https://forms.gle/4FpZcHrBjNBL4mQr9",
     lblCurrentManagedTeam: "目前管理團隊：",
     txtTeamUnspecified: "未指定",
     placeholderAdminPassCurrent: "目前: ",
@@ -469,7 +470,8 @@ const I18N={
     verifyHintCannotReadAny: "Cannot read verification code information for any team from the database.",
     // HTML and JS dynamic content additions
     siteHtmlTitle: "SKY ⚣ OPG Alliance System",
-    verifyHintUsageNote: "SKY ⚣ OPG Alliance System /n Opinion：https://forms.gle/4FpZcHrBjNBL4mQr9",
+    verifyHintUsageNote1: "SKY ⚣ OPG Alliance Exclusive ,suggestions：",
+    verifyHintUsageNote2: "https://forms.gle/4FpZcHrBjNBL4mQr9",
     lblCurrentManagedTeam: "Currently Managing Team: ",
     txtTeamUnspecified: "Unspecified",
     placeholderAdminPassCurrent: "Current: ",
